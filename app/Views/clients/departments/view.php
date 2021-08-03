@@ -19,7 +19,6 @@
         <li><a role="presentation" href="<?php echo_uri("departments/get_todo/".$dept_info->id ); ?>" data-bs-target="#tab-company-info"> <?php echo 'Todo'; //app_lang('company'); ?></a></li>
         <li><a role="presentation" href="<?php echo_uri("departments/get_people/".$dept_info->id); ?>" data-bs-target="#tab-social-links"> <?php echo 'People'; //app_lang('social_links'); ?></a></li>
         <li><a role="presentation" href="<?php echo_uri("departments/get_project/".$dept_info->id); ?>" data-bs-target="#tab-account-settings"> <?php echo 'Projects'; //app_lang('account_settings'); ?></a></li>
-       
         <li><a role="presentation" href="<?php echo_uri("departments/get_meeting/".$dept_info->id); ?>" data-bs-target="#tab-my-preferences"> <?php echo 'Events'; //app_lang('my_preferences'); ?></a></li>        
     </ul>
 

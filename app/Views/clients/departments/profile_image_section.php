@@ -37,51 +37,51 @@
 
 
     <div class="box-content pl15">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <h2 class="p10 m0"><strong> <?php echo $dept_info->name; ?> </strong></h2>
             <p class="p10 m0"><?php echo substr($dept_info->description, 0, 200); ?> </p>
             <?php if(strlen($dept_info->description) > 200){ ?>
-            <p class="p10 m0"><?php echo modal_anchor(get_uri("departments/department_view_modal"), 'See more...', array("class" => "text-white text-right", "title" => 'See more...', "data-post-depart_id" => $dept_info->id)); ?></p>
+            <p class="p10 m0">
+                <?php echo modal_anchor(get_uri("departments/department_view_modal"), 'See more...', array("class" => "text-white text-right", "title" => 'See more...', "data-post-depart_id" => $dept_info->id)); ?>
+            </p>
             <?php }?>
-        </div>
-    </div>
-    <?php if(isset($department) && $department):?>
-    <div class="box-content w300">
-        <div class="custom-btn-group text-center">
-            <?php echo form_open(get_uri("todo/save"), array("id" => "todo-inline-form", "class" => "fade-btn hide tab-company-info", "role" => "form")); ?>
-            <input type="hidden" name="department" value="<?php echo $department->id?>">
-            <div class="todo-input-box" style="margin:0px">
-                <div class="input-group">
+            <?php if(isset($department) && $department):?>
+                <div class="custom-btn-group">
+                    <?php echo form_open(get_uri("todo/save"), array("id" => "todo-inline-form", "class" => "fade-btn hide tab-company-info", "role" => "form")); ?>
+                    <input type="hidden" name="department" value="<?php echo $department->id?>">
+                    <div class="todo-input-box" style="margin:0px">
+                        <div class="input-group">
+                            <?php
+                            echo form_input(array(
+                                "id" => "todo-title",
+                                "name" => "title",
+                                "value" => "",
+                                "class" => "form-control",
+                                "placeholder" => app_lang('add_a_todo'),
+                                "autocomplete" => "off",
+                                "autofocus" => true
+                            ));
+                            ?>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-secondary"><span data-feather="check-circle" class="icon-16"></span> <?php echo app_lang('save'); ?></button>
+                            </span>
+                        </div>
+                    </div>
+                    <?php echo form_close(); ?>
                     <?php
-                    echo form_input(array(
-                        "id" => "todo-title",
-                        "name" => "title",
-                        "value" => "",
-                        "class" => "form-control",
-                        "placeholder" => app_lang('add_a_todo'),
-                        "autocomplete" => "off",
-                        "autofocus" => true
-                    ));
-                    ?>
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-secondary"><span data-feather="check-circle" class="icon-16"></span> <?php echo app_lang('save'); ?></button>
-                    </span>
+                        if (!get_setting("disable_user_invitation_option_by_clients")) {
+                            echo modal_anchor(get_uri("clients/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " . app_lang('send_invitation'), array("class" => "btn btn-default fade-btn hide tab-social-links", "title" => app_lang('send_invitation'), "data-post-client_id" => $login_user->client_id));
+                        }
+                        if ($department->client_id == $login_user->id) {
+                            echo modal_anchor(get_uri("projects/modal_form/".$department->id), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_project'), array("class" => "btn btn-default fade-btn hide tab-account-settings", "data-post-client_id" => $login_user->client_id, "title" => app_lang('add_project')));
+                        }
+        
+                        echo modal_anchor(get_uri("events/modal_form/".$department->id), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_event'), array("class" => "btn btn-default fade-btn hide tab-my-preferences add-btn", "title" => app_lang('add_event'), "data-post-client_id" => $login_user->id));
+                    ?>            
                 </div>
-            </div>
-            <?php echo form_close(); ?>
-            <?php
-                if (!get_setting("disable_user_invitation_option_by_clients")) {
-                    echo modal_anchor(get_uri("clients/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " . app_lang('send_invitation'), array("class" => "btn btn-default fade-btn hide tab-social-links", "title" => app_lang('send_invitation'), "data-post-client_id" => $login_user->client_id));
-                }
-                if ($department->client_id == $login_user->id) {
-                    echo modal_anchor(get_uri("projects/modal_form/".$department->id), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_project'), array("class" => "btn btn-default fade-btn hide tab-account-settings", "data-post-client_id" => $login_user->client_id, "title" => app_lang('add_project')));
-                }
-
-                echo modal_anchor(get_uri("events/modal_form/".$department->id), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_event'), array("class" => "btn btn-default fade-btn hide tab-my-preferences add-btn", "title" => app_lang('add_event'), "data-post-client_id" => $login_user->id));
-            ?>            
+            <?php endif;?>
         </div>
     </div>
-    <?php endif;?>
 </div>
 
 

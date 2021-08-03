@@ -1,6 +1,9 @@
 /*Write your custom css in this file.*/
 #profile-image-section .custom-btn-group{
-    margin-top: 5%;
+    float: right;
+}
+#profile-image-section .custom-btn-group>form{
+    padding: 0px;
 }
 #profile-image-section .fade-btn{
     padding: 10px 15px;
