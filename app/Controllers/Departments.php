@@ -40,7 +40,7 @@ class Departments extends Security_Controller {
         if (!get_setting("client_can_edit_departments")  || !get_setting("client_can_create_departments")  || !get_setting("client_can_view_departments")) {
             app_redirect("forbidden");
         }
-        $view_data['client_id'] = $this->login_user->id;
+        $view_data['client_id'] = $this->login_user->client_id;
         return $this->template->rander("clients/departments/lists", $view_data);
     }
     /* list of contacts, prepared for datatable  */
