@@ -1813,25 +1813,35 @@ function department_view_modal() {
         return validate_post_file($this->request->getPost("file_name"));
     }
 
-    function get_feed($dtp_id) {
+    function get_feed($dpt_id) {
         $view_data['team_members'] = "";
-        $view_data['department_id'] = $dtp_id;
+        $view_data['department_id'] = $dpt_id;
+        $this->init_permission_checker("message_permission");
+        if (get_array_value($this->login_user->permissions, "message_permission") !== "no") {
+            $view_data['team_members'] = $this->Messages_model->get_users_for_messaging(
+                array(
+                    'login_user_id'=>$this->login_user->id,
+                    'client_id'=>$this->login_user->client_id,
+                    'client_to_members'=>$this->login_user->id
+                )
+            )->getResult();
+        }
         return $this->template->view("timeline/index", $view_data);
     }
 
-    function get_todo($dtp_id) {
+    function get_todo($dpt_id) {
         $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
-        $view_data['department_id'] = $dtp_id;
+        $view_data['department_id'] = $dpt_id;
         return $this->template->view("todo/index", $view_data);
     }
 
-    function get_people($dtp_id) {
+    function get_people($dpt_id) {
         $view_data['client_id'] = $this->login_user->client_id;
-        $view_data['department'] = get_department($dtp_id);
+        $view_data['department'] = get_department($dpt_id);
         return $this->template->view("clients/contacts/users", $view_data);
     }
 
-    function get_project($dtp_id, $status = '') {
+    function get_project($dpt_id, $status = '') {
         $view_data['project_labels_dropdown'] = json_encode($this->make_labels_dropdown("project", "", true));
 
         $view_data["can_create_projects"] = $this->can_create_projects();
@@ -1842,16 +1852,16 @@ function department_view_modal() {
 
         $view_data['client_id'] = $this->login_user->client_id;
         $view_data['page_type'] = "full";
-        $view_data["can_create_projects"] = get_department($dtp_id)->client_id == $this->login_user->id;
-        $view_data['department_id'] = $dtp_id;
+        $view_data["can_create_projects"] = get_department($dpt_id)->client_id == $this->login_user->id;
+        $view_data['department_id'] = $dpt_id;
         return $this->template->view("clients/projects/index", $view_data);
     }
 
-    function get_meeting($dtp_id, $encrypted_event_id = "") {
+    function get_meeting($dpt_id, $encrypted_event_id = "") {
         $view_data['encrypted_event_id'] = $encrypted_event_id;
         $view_data['calendar_filter_dropdown'] = $this->get_calendar_filter_dropdown();
         $view_data['event_labels_dropdown'] = json_encode($this->make_labels_dropdown("event", "", true, app_lang("event") . " " . strtolower(app_lang("label"))));
-        $view_data['department_id'] = $dtp_id;
+        $view_data['department_id'] = $dpt_id;
         return $this->template->view("events/index", $view_data);
     }
 

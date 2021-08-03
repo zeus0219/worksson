@@ -856,7 +856,13 @@ class Dashboard extends Security_Controller {
                 $view_data['team_members'] = "";
                 $this->init_permission_checker("message_permission");
                 if (get_array_value($this->login_user->permissions, "message_permission") !== "no") {
-                    $view_data['team_members'] = $this->Messages_model->get_users_for_messaging($this->get_user_options_for_query("staff"))->getResult();
+                    $view_data['team_members'] = $this->Messages_model->get_users_for_messaging(
+                        array(
+                            'login_user_id'=>$this->login_user->id,
+                            'client_id'=>$this->login_user->client_id,
+                            'client_to_members'=>$this->login_user->id
+                        )
+                    )->getResult();
                 }
 
                 return $this->template->view("timeline/index", $view_data);
