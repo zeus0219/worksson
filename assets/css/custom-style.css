@@ -1,6 +1,8 @@
 /*Write your custom css in this file.*/
 #profile-image-section .custom-btn-group{
-    float: right;
+    position: absolute;
+    right: 30px;
+    margin-top: 20px;
 }
 #profile-image-section .custom-btn-group>form{
     padding: 0px;
