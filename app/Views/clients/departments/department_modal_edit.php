@@ -1,7 +1,7 @@
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <?php echo form_open_multipart(get_uri("departments/edit_department/".$depart_info->id), array("id" => "department-form", "class" => "general-form", "role" => "form")); ?>
-<div class="modal-body">
-    <div class="container-fluid clearfix post-dropzone" id="new-ticket-dropzone1">
+<div class="modal-body clearfix post-dropzone" id="new-ticket-dropzone1">
+    <div class="container-fluid">
         <br />
 
 
@@ -25,26 +25,22 @@
                 </div>
             </div>
         </div>
-        <?php if(count($client_info) > 0): ?>
-            <div class="form-group">
-                <div class="row">
-                    <label for="manager" class=" col-md-3"><strong><?php echo app_lang('Manager'); ?></strong></label>
-                    <div class=" col-md-9">
-                        <?php
-                        $clients_dropdown = array(
-                            $login_user->id => $login_user->first_name.' '.$login_user->last_name
-                        );
-                        if (isset($client_info) && !empty($client_info)) {
-                            foreach ($client_info as $row) {
-                                $clients_dropdown[$row->id] = $row->first_name . ' ' . $row->last_name;
-                            }
+        <div class="form-group">
+            <div class="row">
+                <label for="client_id" class=" col-md-3"><strong><?php echo app_lang('Manager'); ?></strong></label>
+                <div class=" col-md-9">
+                    <?php
+                    $clients_dropdown = array();
+                    if (isset($client_info) && !empty($client_info)) {
+                        foreach ($client_info as $row) {
+                            $clients_dropdown[$row->id] = $row->first_name . ' ' . $row->last_name;
                         }
-                        echo form_dropdown("manager", $clients_dropdown, ($depart_info->manager ? $depart_info->manager : $depart_info->client_id), "class='select2 validate-hidden' data-rule-required='true', data-msg-required='" . app_lang('field_required') . "'");
-                        ?>
-                    </div>
+                    }
+                    echo form_dropdown("client_id", $clients_dropdown, $depart_info->client_id, "class='select2 validate-hidden' data-rule-required='true', data-msg-required='" . app_lang('field_required') . "'");
+                    ?>
                 </div>
             </div>
-        <?php endif;?>
+        </div>
         <div class="form-group">
             <div class="row">
                 <label for="description" class=" col-md-3"><strong><?php echo app_lang('description'); ?></strong></label>
@@ -71,7 +67,7 @@
                                                                     ?></strong><br>
                     <small>Enter a name or email</small></label>
 
-                <div class=" col-md-9">
+                <div class=" col-md-9 post-file-upload-row">
                     <?php echo view("includes/dropzone_preview"); ?>
                     <button class="btn btn-default upload-file-button float-start me-auto btn-sm round  <?php
                                                                                                         if (!$depart_info->id) {
@@ -87,20 +83,15 @@
                 <label for="description" class=" col-md-3"><strong><?php echo 'Budget';?></strong></label>
 
                 <div class=" col-md-9">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><?php echo ($currency ? $currency : "$"); ?></span>
-                        </div>
-                        <?php
-                        echo form_input(array(
-                            "id" => "budget",
-                            "name" => "budget",
-                            "value" => $depart_info->budget,
-                            "class" => "form-control",
-                            "placeholder" => app_lang('Budget'),
-                        ));
-                        ?>
-                    </div>
+                    <?php
+                    echo form_input(array(
+                        "id" => "budget",
+                        "name" => "budget",
+                        "value" => $depart_info->budget,
+                        "class" => "form-control",
+                        "placeholder" => app_lang('Budget'),
+                    ));
+                    ?>
                 </div>
             </div>
         </div>
