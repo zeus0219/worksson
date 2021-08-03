@@ -7,7 +7,7 @@
     </div>
 
     <?php if ($team_members) { ?>
-        <div class="hidden-xs box-content bg-white" style="width: 250px; min-height: 100%;">
+        <div class="hidden-xs box-content bg-white" style="width: 300px; min-height: 100%;">
             <div id="user-list-container" >
                 <div class="p15">
                     <?php

@@ -357,7 +357,7 @@ class Projects extends Security_Controller {
 
     /* load project  add/edit modal */
 
-    function modal_form() {
+    function modal_form($dpt_id = '') {
         $project_id = $this->request->getPost('id');
         $client_id = $this->request->getPost('client_id');
 
@@ -383,12 +383,13 @@ class Projects extends Security_Controller {
         if ($estimate_id) {
             $view_data['model_info']->estimate_id = $estimate_id;
         }
-$view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("projects", $view_data['model_info']->id, $this->login_user->is_admin, $this->login_user->user_type)->getResult();
 
         $view_data['clients_dropdown'] = $this->Clients_model->get_dropdown_list(array("company_name"), "id", array("is_lead" => 0));
 
         $view_data['label_suggestions'] = $this->make_labels_dropdown("project", $view_data['model_info']->labels);
+        $view_data['department_id'] = $dpt_id;
 
         return $this->template->view('projects/modal_form', $view_data);
     }

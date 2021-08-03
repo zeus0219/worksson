@@ -4,7 +4,7 @@
             <h1><?php echo app_lang('users'); ?></h1>
             <div class="title-button-group">
                 <?php
-                if (!get_setting("disable_user_invitation_option_by_clients") && $department->client_id == $login_user->id) {
+                if (!get_setting("disable_user_invitation_option_by_clients") && !isset($department)) {
                     echo modal_anchor(get_uri("clients/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " . app_lang('send_invitation'), array("class" => "btn btn-default", "title" => app_lang('send_invitation'), "data-post-client_id" => $client_id));
                 }
                 ?>

@@ -342,7 +342,7 @@ class Team_members extends Security_Controller {
             $can_view = $this->Users_model->get_all_where(array('id'=>$id, 'client_id'=>$this->login_user->client_id))->getNumRows() > 0;
             if(!$can_view) $can_view = $this->Users_model->get_all_where(array('id'=>$id, 'client_id'=>$this->login_user->id))->getNumRows() > 0;
             //if team member's list is disabled, but the user can see his/her own profile.
-            if (!$this->can_view_team_members_list() && $this->login_user->id != $id && !$can_view) {
+            if (!$this->can_view_team_members_list() && $this->login_user->id != $id && ($this->login_user->user_type == 'staff' || !$can_view)) {
                 app_redirect("forbidden");
             }
 

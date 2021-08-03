@@ -61,21 +61,27 @@
           <div class="form-group">
             <div class="row">
 
-                <label for="ticket_type_id" class=" col-md-3"><strong><?php echo 'Add department' //app_lang('ticket_type'); 
-                                                                        ?></strong></label>
+                <label for="ticket_type_id" class=" col-md-3"><strong><?php echo app_lang('Department'); ?></strong></label>
                 <div class="col-md-9">
-                    <select id="ticket_type_id" name="department" class="select2 " required >
-                        <?php if (isset($client_info) && !empty($client_info)) {
-                            foreach ($client_info as $row) {
-                                echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
-                            }
-                        } ?>
-
-
+                    <?php if($department_id):?>
+                        <input type="hidden" name="department" value="<?php echo $department_id; ?>">
+                        <?php
+                        echo form_input(array(
+                            "id" => "ticket_type_id",
+                            "value" => get_department($department_id)->name,
+                            "class" => "form-control",
+                            "disabled" => "disabled"
+                        ));
+                        ?>
+                    <?php else:?>
+                        <select id="ticket_type_id" name="department" class="select2 " required >
+                            <?php if (isset($client_info) && !empty($client_info)) {
+                                foreach ($client_info as $row) {
+                                    echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
+                                }
+                            } ?>
                     </select>
-                    <?php
-                    //echo form_dropdown("ticket_type_id", $ticket_types_dropdown, $model_info->ticket_type_id, "class='select2'");
-                    ?>
+                    <?php endif;?>
                 </div>
             </div>
         </div>

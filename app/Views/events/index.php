@@ -35,17 +35,20 @@ if (isset($client_id)) {
                     <div id="calendar-filter-dropdown" class="float-start <?php echo (count($calendar_filter_dropdown) == 1) ? "hide" : ""; ?>"></div>
                 <?php } ?>
 
-                <?php echo modal_anchor(get_uri("labels/modal_form/$department_id"), "<i data-feather='tag' class='icon-16'></i> " . app_lang('manage_labels'), array("class" => "btn btn-default", "title" => app_lang('manage_labels'), "data-post-type" => "event")); ?>
+                <?php echo modal_anchor(get_uri("labels/modal_form/".(isset($department_id) ? $department_id : '')), "<i data-feather='tag' class='icon-16'></i> " . app_lang('manage_labels'), array("class" => "btn btn-default", "title" => app_lang('manage_labels'), "data-post-type" => "event")); ?>
 
                 <?php
                 if (get_setting("enable_google_calendar_api")) {
-                    echo modal_anchor(get_uri("events/google_calendar_settings_modal_form/$department_id"), "<i data-feather='settings' class='icon-16'></i> " . app_lang('google_calendar_settings'), array("class" => "btn btn-default", "title" => app_lang('google_calendar_settings')));
+                    echo modal_anchor(get_uri("events/google_calendar_settings_modal_form/".(isset($department_id) ? $department_id : '')), "<i data-feather='settings' class='icon-16'></i> " . app_lang('google_calendar_settings'), array("class" => "btn btn-default", "title" => app_lang('google_calendar_settings')));
                 }
                 ?>
+                <?php 
+                    if(!isset($department_id)):
+                        echo modal_anchor(get_uri("events/modal_form/"), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_event'), array("class" => "btn btn-default add-btn", "title" => app_lang('add_event'), "data-post-client_id" => $client));
+                    endif;
+                ?>
 
-                <?php echo modal_anchor(get_uri("events/modal_form/$department_id"), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_event'), array("class" => "btn btn-default add-btn", "title" => app_lang('add_event'), "data-post-client_id" => $client)); ?>
-
-                <?php echo modal_anchor(get_uri("events/modal_form/$department_id"), "", array("class" => "hide", "id" => "add_event_hidden", "title" => app_lang('add_event'), "data-post-client_id" => $client)); ?>
+                <?php echo modal_anchor(get_uri("events/modal_form/".(isset($department_id) ? $department_id : '')), "", array("class" => "hide", "id" => "add_event_hidden", "title" => app_lang('add_event'), "data-post-client_id" => $client)); ?>
                 <?php echo modal_anchor(get_uri("events/view"), "", array("class" => "hide", "id" => "show_event_hidden", "data-post-client_id" => $client, "data-post-cycle" => "0", "data-post-editable" => "1", "title" => app_lang('event_details'))); ?>
                 <?php echo modal_anchor(get_uri("leaves/application_details"), "", array("class" => "hide", "data-post-id" => "", "id" => "show_leave_hidden")); ?>
                 <?php echo modal_anchor(get_uri("projects/task_view"), "", array("class" => "hide", "data-post-id" => "", "id" => "show_task_hidden", "data-modal-lg" => "1")); ?>

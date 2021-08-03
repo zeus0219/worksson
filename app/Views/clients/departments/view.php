@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="p20 row">
-                        <?php echo view("clients/departments/profile_image_section"); ?>
+                        <?php echo view("clients/departments/profile_image_section", array('department'=>$dept_info)); ?>
                     </div>
                 </div>
 

@@ -8,7 +8,7 @@
                 <h1><?php echo app_lang('projects'); ?></h1>
                 <div class="title-button-group">
                     <?php
-                    if (isset($can_create_projects) && $can_create_projects) {
+                    if (isset($can_create_projects) && $can_create_projects && !isset($department_id)) {
                         echo modal_anchor(get_uri("projects/modal_form"), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_project'), array("class" => "btn btn-default", "data-post-client_id" => $client_id, "title" => app_lang('add_project')));
                     }
                     ?>

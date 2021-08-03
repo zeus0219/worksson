@@ -1818,11 +1818,17 @@ function department_view_modal() {
         $view_data['department_id'] = $dpt_id;
         $this->init_permission_checker("message_permission");
         if (get_array_value($this->login_user->permissions, "message_permission") !== "no") {
+            
+            $dpt_users = $this->Departments_user_model->get_all_where(array('department_id'=>$dpt_id))->getResult();
+            $users = array();
+            foreach($dpt_users as $row) {
+                $users[] = $row->user_id;
+            }
             $view_data['team_members'] = $this->Messages_model->get_users_for_messaging(
                 array(
                     'login_user_id'=>$this->login_user->id,
-                    'client_id'=>$this->login_user->client_id,
-                    'client_to_members'=>$this->login_user->id
+                    'specific_members'=>$users
+
                 )
             )->getResult();
         }

@@ -1,46 +1,44 @@
 <div id="page-content" class="page-wrapper clearfix">
 
-    <?php echo form_open(get_uri("todo/save"), array("id" => "todo-inline-form", "class" => "", "role" => "form")); ?>
-    <div class="todo-input-box">
-        <div class="row">
-            <?php if($department_id) : ?>
-                <input type="hidden" name="department" value="<?php echo $department_id?>">
-            <?php else:?>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <select id="ticket_type_id" name="department" class="  form-control" required >
-                        <?php if (isset($client_info) && !empty($client_info)) {
-                            foreach ($client_info as $row) {
-                                echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
-                            }
-                        } ?>
+    <?php if(!isset($department_id) || !$department_id) : ?>
+        <?php echo form_open(get_uri("todo/save"), array("id" => "todo-inline-form", "class" => "", "role" => "form")); ?>
+        <div class="todo-input-box">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <select id="ticket_type_id" name="department" class="  form-control" required >
+                            <?php if (isset($client_info) && !empty($client_info)) {
+                                foreach ($client_info as $row) {
+                                    echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
+                                }
+                            } ?>
 
 
-                    </select>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <?php endif;?>
-            <div class="col-md-6">
-                <div class="input-group">
-                    <?php
-                    echo form_input(array(
-                        "id" => "todo-title",
-                        "name" => "title",
-                        "value" => "",
-                        "class" => "form-control",
-                        "placeholder" => app_lang('add_a_todo'),
-                        "autocomplete" => "off",
-                        "autofocus" => true
-                    ));
-                    ?>
-                    <span class="input-group-btn">
-                        <button type="submit" class="btn btn-primary"><span data-feather="check-circle" class="icon-16"></span> <?php echo app_lang('save'); ?></button>
-                    </span>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <?php
+                        echo form_input(array(
+                            "id" => "todo-title",
+                            "name" => "title",
+                            "value" => "",
+                            "class" => "form-control",
+                            "placeholder" => app_lang('add_a_todo'),
+                            "autocomplete" => "off",
+                            "autofocus" => true
+                        ));
+                        ?>
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary"><span data-feather="check-circle" class="icon-16"></span> <?php echo app_lang('save'); ?></button>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <?php echo form_close(); ?>
+        <?php echo form_close(); ?>
+    <?php endif;?>
 
 
     <div class="card">
