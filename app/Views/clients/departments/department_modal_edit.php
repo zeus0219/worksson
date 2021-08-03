@@ -1,7 +1,7 @@
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <?php echo form_open_multipart(get_uri("departments/edit_department/".$depart_info->id), array("id" => "department-form", "class" => "general-form", "role" => "form")); ?>
-<div class="modal-body clearfix post-dropzone" id="new-ticket-dropzone1">
-    <div class="container-fluid">
+<div class="modal-body">
+    <div class="container-fluid clearfix post-dropzone" id="new-ticket-dropzone1">
         <br />
 
 
@@ -67,7 +67,7 @@
                                                                     ?></strong><br>
                     <small>Enter a name or email</small></label>
 
-                <div class=" col-md-9 post-file-upload-row">
+                <div class=" col-md-9">
                     <?php echo view("includes/dropzone_preview"); ?>
                     <button class="btn btn-default upload-file-button float-start me-auto btn-sm round  <?php
                                                                                                         if (!$depart_info->id) {
@@ -83,15 +83,20 @@
                 <label for="description" class=" col-md-3"><strong><?php echo 'Budget';?></strong></label>
 
                 <div class=" col-md-9">
-                    <?php
-                    echo form_input(array(
-                        "id" => "budget",
-                        "name" => "budget",
-                        "value" => $depart_info->budget,
-                        "class" => "form-control",
-                        "placeholder" => app_lang('Budget'),
-                    ));
-                    ?>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><?php echo ($currency ? $currency : "$"); ?></span>
+                        </div>
+                        <?php
+                        echo form_input(array(
+                            "id" => "budget",
+                            "name" => "budget",
+                            "value" => $depart_info->budget,
+                            "class" => "form-control",
+                            "placeholder" => app_lang('Budget'),
+                        ));
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>

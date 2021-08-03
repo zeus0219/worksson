@@ -59,6 +59,7 @@ class Departments extends Security_Controller {
             $hide_primary_contact_label = true;
         }
         foreach ($list_data as $data) {
+            $data->symbol = $this->Clients_model->get_one_where($data->client_id)->currency_symbol;
             $result[] = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label);
         }
         echo json_encode(array("data" => $result));
@@ -138,7 +139,7 @@ class Departments extends Security_Controller {
             $countProject,
             modal_anchor(get_uri("team_members/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " , array("class" => "btn btn-default", "title" => app_lang('send_invitation'))),
             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> <span class="bg-success badge">' . $countEvent . '</span>',
-            $data->budget,
+            $data->budget ? to_currency($data->budget, $data->symbol) : "-",
             $full_name,
             $optoins,
 
@@ -165,6 +166,7 @@ class Departments extends Security_Controller {
         ));
         $depart_id = $this->request->getPost('id');
         $client_id = $this->request->getPost('client_id');
+        $view_data["currency"] = $this->Clients_model->get_one_where($client_id)->currency_symbol;
         $view_data["client_info"] = $this->Users_model->get_all()->getResult();
         return $this->template->view('clients/departments/department_modal', $view_data);
     }
@@ -182,6 +184,7 @@ class Departments extends Security_Controller {
         $view_data["users_info"] = $this->Departments_user_model->get_all_where($where)->getResult();
         $view_data['user_id'] = array_column($view_data["users_info"], 'user_id');
         $view_data["client_info"] = $this->Users_model->get_all()->getResult();
+        $view_data["currency"] = $this->Clients_model->get_one_where($view_data["depart_info"]->client_id)->currency_symbol;
         return $this->template->view('clients/departments/department_modal_edit', $view_data);
     }
 
