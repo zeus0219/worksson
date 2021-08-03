@@ -76,6 +76,24 @@
         <div class="form-group">
             <div class="row">
 
+                <label for="description" class=" col-md-3"><strong><?php echo 'Budget';?></strong></label>
+
+                <div class=" col-md-9">
+                    <?php
+                    echo form_input(array(
+                        "id" => "budget",
+                        "name" => "budget",
+                        "value" => 0,
+                        "class" => "form-control",
+                        "placeholder" => app_lang('Budget'),
+                    ));
+                    ?>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+
                 <label for="ticket_type_id" class=" col-md-3"><strong><?php echo 'Add People' //app_lang('ticket_type'); 
                                                                         ?></strong></label>
                 <div class="col-md-9">

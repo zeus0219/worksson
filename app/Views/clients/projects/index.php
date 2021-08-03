@@ -70,7 +70,7 @@ if (isset($page_type) && $page_type === 'dashboard') {
 
 
         $("#project-table").appTable({
-            source: '<?php echo_uri("projects/projects_list_data_of_client/$client_id/$department_id") ?>',
+            source: '<?php echo_uri("projects/projects_list_data_of_client/".$client_id."/".(isset($department_id) ? $department_id : '')) ?>',
             order: [[0, "desc"]],
             hideTools: hideTools,
             multiSelect: [

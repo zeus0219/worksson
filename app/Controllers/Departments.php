@@ -77,7 +77,7 @@ class Departments extends Security_Controller {
             $c_name = "#";
         }
         $departmentProfile = $c_name;
-        $department_name = "<a href='$departmentProfile'>$data->name</a>";
+        $department_name = "<a href='$departmentProfile' style='display: inline-block;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;width:200px'>$data->name</a>";
         $full_name = "<span class='avatar avatar-xs'><img src='$image_url2' alt='" . $data->first_name . "' style='margin-right: 7px;'>" . $data->first_name . " </span>";
         $private = "";
         if ($data->dstatus == 1) {
@@ -136,7 +136,7 @@ class Departments extends Security_Controller {
             $private,
             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle icon"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>',
             $countProject,
-            modal_anchor(get_uri("team_members/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " . app_lang('send_invitation'), array("class" => "btn btn-default", "title" => app_lang('send_invitation'))),
+            modal_anchor(get_uri("team_members/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " , array("class" => "btn btn-default", "title" => app_lang('send_invitation'))),
             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> <span class="bg-success badge">' . $countEvent . '</span>',
             $data->budget,
             $full_name,
@@ -201,6 +201,7 @@ class Departments extends Security_Controller {
         $description = trim($this->request->getPost('description'));
         $people = $this->request->getPost('people');
         $status = trim($this->request->getPost('status'));
+        $budget = trim($this->request->getPost('budget'));
 
         $this->validate_submitted_data(array(
             "name" => "required|trim",
@@ -214,6 +215,7 @@ class Departments extends Security_Controller {
             "description"=>$description,
             'status'=> $status,
             'client_id'=>$client_id,
+            'budget'=> $budget,
             'image'=> $files_data,
             'slug'=>$slug 
         );

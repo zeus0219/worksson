@@ -33,7 +33,7 @@
                 {title: "<?php echo  app_lang("send_invitation") ?>", "class": "w10p"},
                 {title: "<?php echo  app_lang("Events") ?>", "class": "w5p"},
                 {title: "<?php echo  app_lang("Budget") ?>", "class": "w5p"},
-                {title: "<?php echo  app_lang("Manager") ?>", "class": "w15p"},
+                {title: "<?php echo  app_lang("Manager") ?>", "class": "w10p"},
                 {title: "<?php echo  app_lang("Action") ?>", "class": "text-center option w100"},
                 // {visible: false, searchable: false},
                
