@@ -172,9 +172,9 @@ class Departments extends Security_Controller {
         $depart_id = $this->request->getPost('id');
         $client_id = $this->request->getPost('client_id');
         $view_data["currency"] = $this->Clients_model->get_one_where($client_id)->currency_symbol;
-        $view_data["client_info"] = $this->Users_model->get_all_where(array('client_id'=> $this->login_user->id))->getResult();
+        $view_data["client_info"] = $this->Users_model->get_all_where(array('client_id'=> $this->login_user->client_id))->getResult();
         
-        $view_data["client_id"] = $this->login_user->id;
+        $view_data["client_id"] = $this->login_user->client_id;
         return $this->template->view('clients/departments/department_modal', $view_data);
     }
     function department_modal_edit() {
@@ -190,7 +190,7 @@ class Departments extends Security_Controller {
         $where = array('department_id'=>$view_data["depart_info"]->id);
         $view_data["users_info"] = $this->Departments_user_model->get_all_where($where)->getResult();
         $view_data['user_id'] = array_column($view_data["users_info"], 'user_id');
-        $view_data["client_info"] = $this->Users_model->get_all_where(array('client_id'=> $this->login_user->id))->getResult();
+        $view_data["client_info"] = $this->Users_model->get_all_where(array('client_id'=> $this->login_user->client_id))->getResult();
         $view_data["currency"] = $this->Clients_model->get_one_where($view_data["depart_info"]->client_id)->currency_symbol;
         return $this->template->view('clients/departments/department_modal_edit', $view_data);
     }
@@ -1875,7 +1875,7 @@ function department_view_modal() {
 
         $view_data['client_id'] = $this->login_user->client_id;
         $view_data['page_type'] = "full";
-        $view_data["can_create_projects"] = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;;
+        $view_data["can_create_projects"] = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
         $view_data['department_id'] = $dpt_id;
         return $this->template->view("clients/projects/index", $view_data);
     }
