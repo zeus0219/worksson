@@ -839,7 +839,7 @@ class Projects extends Security_Controller {
             "custom_fields" => $custom_fields
         );
 
-        $is_manager = get_department($dpt_id)->client_id == $this->login_user->id;
+        $is_manager = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
 
         $list_data = $this->Projects_model->get_details($options)->getResult();
         $result = array();

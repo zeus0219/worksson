@@ -1306,7 +1306,7 @@ class Clients extends Security_Controller {
             "params" => serialize(array(
                 "email" => $email,
                 "type" => "client",
-                "client_id" => $client_id,
+                "client_id" => $this->login_user->id,
                 "expire_time" => time() + (24 * 60 * 60) //make the invitation url with 24hrs validity
             ))
         );
