@@ -50,8 +50,15 @@ class Departments extends Security_Controller {
         if (!get_setting("client_can_view_departments")) {
             app_redirect("forbidden");
         }
+
+        $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+        $dpts = array();
+        foreach($departs as $row) {
+            $dpts[] = $row->department_id;
+        }
+
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("client_contacts", $this->login_user->is_admin, $this->login_user->user_type);
-        $options = array("user_type" => "client", "client_id" => $client_id, "custom_fields" => $custom_fields, "show_own_clients_only_user_id" => $this->show_own_clients_only_user_id());
+        $options = array("user_type" => "client", 'where_in' => array('id'=> $dpts), "custom_fields" => $custom_fields);
         $list_data = $this->Departments_model->get_details($options)->getResult();
         $result = array();
         $hide_primary_contact_label = false;
@@ -233,11 +240,13 @@ class Departments extends Security_Controller {
         );
         $save_id = $this->Departments_model->ci_save($verification_data);
         if ($save_id) {
+            $people[] = $client_id;
+            $people[] = $manager;
             if(isset($people) && !empty($people)){
-                foreach($people as $key=>$value){
+                foreach($people as $value){
                     $people_data = array(
                         "department_id" => $save_id,
-                        "user_id" => $people[$key],
+                        "user_id" => $value,
 
                     );
                     $this->Departments_user_model->ci_save($people_data);
@@ -301,21 +310,13 @@ class Departments extends Security_Controller {
         
         if ($save_id) {
             $this->Departments_user_model->delete_department_users($department_id);
-            $this->Departments_user_model->ci_save(array(
-                "department_id" => $department_id,
-                "user_id" => $client_id,
-            ));
-            if($client_id != $manager) {
-                $this->Departments_user_model->ci_save(array(
-                    "department_id" => $department_id,
-                    "user_id" => $manager,
-                ));
-            }
+            $people[] = $client_id;
+            $people[] = $manager;
             if(isset($people) && !empty($people)){
-                foreach($people as $key=>$value){
+                foreach($people as $value){
                     $people_data = array(
                         "department_id" => $department_id,
-                        "user_id" => $people[$key],
+                        "user_id" => $value,
                     );
                     $this->Departments_user_model->ci_save($people_data);
                 }
