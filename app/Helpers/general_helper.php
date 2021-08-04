@@ -1830,3 +1830,11 @@ if(!function_exists('get_department')) {
         return $Departments_model->get_one($id);
     }
 }
+
+if(!function_exists('can_manage_department')) {
+    function can_manage_department($user, $dpt_id) {
+        $Departments_model = model("App\Models\Departments_model");
+        $dpt = $Departments_model->get_one($dpt_id);
+        return $dpt->client_id == $user->id || $dpt->manager == $user->id;
+    }
+}

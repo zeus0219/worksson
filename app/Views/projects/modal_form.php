@@ -63,16 +63,20 @@
 
                 <label for="ticket_type_id" class=" col-md-3"><strong><?php echo app_lang('Department'); ?></strong></label>
                 <div class="col-md-9">
-                    <?php if($department_id):?>
-                        <input type="hidden" name="department" value="<?php echo $department_id; ?>">
-                        <?php
+                <?php     
+                    if($login_user->user_type != 'staff'/*  && $login_user->id != $model_info->created_by */):
+                        echo form_input(array(
+                            "name" => "department",
+                            "value" => $model_info->department_id,
+                            'type'=>'hidden'
+                        ));
                         echo form_input(array(
                             "id" => "ticket_type_id",
-                            "value" => get_department($department_id)->name,
+                            "value" => get_department($model_info->department_id)->name,
                             "class" => "form-control",
                             "disabled" => "disabled"
                         ));
-                        ?>
+                    ?>
                     <?php else:?>
                         <select id="ticket_type_id" name="department" class="select2 " required >
                             <?php if (isset($client_info) && !empty($client_info)) {

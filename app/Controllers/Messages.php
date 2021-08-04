@@ -7,7 +7,8 @@ class Messages extends Security_Controller {
     function __construct() {
         parent::__construct();
         $this->init_permission_checker("message_permission");
-                        $this->Departments_model = model('App\Models\Departments_model');
+        $this->Departments_model = model('App\Models\Departments_model');
+        $this->Departments_user_model = model('App\Models\Departments_user_model');
     }
 
     private function is_my_message($message_info) {
@@ -39,7 +40,16 @@ class Messages extends Security_Controller {
     function modal_form($user_id = 0) {
         $this->check_message_user_permission();
         $view_data['users_dropdown'] = array("" => "-");
-$view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        if($this->login_user->user_type != 'staff') {
+            $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+            $dpts = array();
+            foreach($departs as $row) {
+                $dpts[] = $row->department_id;
+            }
+            $view_data["client_info"] = $this->Departments_model->get_details(array('where_in'=>array('id'=>$dpts)))->getResult();
+        } else {
+            $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        }
         if ($user_id) {
             $view_data['message_user_info'] = $this->Users_model->get_one($user_id);
         } else {

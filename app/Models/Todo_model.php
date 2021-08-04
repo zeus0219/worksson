@@ -20,6 +20,10 @@ class Todo_model extends Crud_model {
             $where .= " AND $todo_table.id=$id";
         }
 
+        $department_id = get_array_value($options, "department_id");
+        if ($department_id) {
+            $where .= " AND $todo_table.department_id=$department_id";
+        }
 
         $created_by = get_array_value($options, "created_by");
         if ($created_by) {
@@ -37,6 +41,7 @@ class Todo_model extends Crud_model {
         $sql = "SELECT $todo_table.*, $select_labels_data_query
         FROM $todo_table
         WHERE $todo_table.deleted=0 $where";
+        
         return $this->db->query($sql);
     }
 

@@ -180,6 +180,12 @@ class Signup extends App_Controller {
                         //create a client contact account
                         $user_id = $this->Users_model->ci_save($user_data);
                         if ($user_id) {
+                            if($department_id) {
+                                $this->Departments_user_model->ci_save(array(
+                                    'department_id'=>$department_id,
+                                    'user_id'=>$user_id
+                                ));
+                            }
                             log_notification("invited_client_contact_signed_up", array("client_id" => $clent_id), $user_id);
                         }
                     } else {

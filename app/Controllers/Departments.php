@@ -67,7 +67,8 @@ class Departments extends Security_Controller {
         }
         foreach ($list_data as $data) {
             $data->symbol = $this->Clients_model->get_one_where($data->client_id)->currency_symbol;
-            $row = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label);
+
+            $row = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label, ($this->login_user->id == $data->manager || $this->login_user->id == $data->client_id));
             if($data->manager && $data->manager != $data->client_id) {
                 $manager = $this->Users_model->get_one($data->manager);
                 $row[9] = "<span class='avatar avatar-xs'><img src='".get_avatar($manager->image)."' alt='" . $manager->first_name . "' style='margin-right: 7px;'>" . $manager->first_name . " </span>";
@@ -76,7 +77,7 @@ class Departments extends Security_Controller {
         }
         echo json_encode(array("data" => $result));
     }
-    private function _make_department_row($data, $custom_fields, $hide_primary_contact_label = false)
+    private function _make_department_row($data, $custom_fields, $hide_primary_contact_label = false, $is_manager = false)
     {
         $html = '';
 
@@ -114,13 +115,15 @@ class Departments extends Security_Controller {
 
         $contact_info = $data->phone;
         $optoins = "";
-        // if (get_setting("client_can_edit_departments")) {
-        $optoins .= modal_anchor(get_uri("departments/department_modal_edit"), "<i data-feather='edit' class='icon-16'></i>", array("class" => "edit", "title" => 'Edit department', "data-post-id" => $data->dept_id));
-        // }
-
-        // if (get_setting("client_can_edit_departments")) {
-        $optoins .= js_anchor("<i data-feather='x' class='icon-16'></i>", array('title' => app_lang('delete_project'), "class" => "delete", "data-id" => $data->dept_id, "data-action-url" => get_uri("departments/delete"), "data-action" => "delete-confirmation"));
-        // }
+        if($is_manager) {
+            // if (get_setting("client_can_edit_departments")) {
+            $optoins .= modal_anchor(get_uri("departments/department_modal_edit"), "<i data-feather='edit' class='icon-16'></i>", array("class" => "edit", "title" => 'Edit department', "data-post-id" => $data->dept_id));
+            // }
+    
+            // if (get_setting("client_can_edit_departments")) {
+            $optoins .= js_anchor("<i data-feather='x' class='icon-16'></i>", array('title' => app_lang('delete_project'), "class" => "delete", "data-id" => $data->dept_id, "data-action-url" => get_uri("departments/delete"), "data-action" => "delete-confirmation"));
+            // }
+        }
 
         //$action= '<a href="#" class="edit" title="Edit task" data-post-id="1" data-act="ajax-modal" data-title="Edit task" data-action-url="http://localhost/app-project/projects/task_modal_form"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit icon-16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></a>';
         // $primary_contact = "";
@@ -240,8 +243,8 @@ class Departments extends Security_Controller {
         );
         $save_id = $this->Departments_model->ci_save($verification_data);
         if ($save_id) {
-            $people[] = $client_id;
-            $people[] = $manager;
+            if(!isset($people) && !in_array($client_id, $people))$people[] = $client_id;
+            if(!in_array($manager, $people))$people[] = $manager;
             if(isset($people) && !empty($people)){
                 foreach($people as $value){
                     $people_data = array(
@@ -310,8 +313,8 @@ class Departments extends Security_Controller {
         
         if ($save_id) {
             $this->Departments_user_model->delete_department_users($department_id);
-            $people[] = $client_id;
-            $people[] = $manager;
+            if(!isset($people) && !in_array($client_id, $people))$people[] = $client_id;
+            if(!in_array($manager, $people))$people[] = $manager;
             if(isset($people) && !empty($people)){
                 foreach($people as $value){
                     $people_data = array(
@@ -1863,7 +1866,12 @@ function department_view_modal() {
     }
 
     function get_todo($dpt_id) {
-        $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+        $dpts = array();
+        foreach($departs as $row) {
+            $dpts[] = $row->department_id;
+        }
+        $view_data["client_info"] = $this->Departments_model->get_details(array('where_in'=>array('id'=>$dpts)))->getResult();
         $view_data['department_id'] = $dpt_id;
         return $this->template->view("todo/index", $view_data);
     }
@@ -1885,7 +1893,7 @@ function department_view_modal() {
 
         $view_data['client_id'] = $this->login_user->client_id;
         $view_data['page_type'] = "full";
-        $view_data["can_create_projects"] = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
+        $view_data["can_create_projects"] = can_manage_department($this->login_user, $dpt_id);
         $view_data['department_id'] = $dpt_id;
         return $this->template->view("clients/projects/index", $view_data);
     }

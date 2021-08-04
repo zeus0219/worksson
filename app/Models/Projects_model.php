@@ -44,6 +44,10 @@ class Projects_model extends Crud_model {
             $where .= " AND (FIND_IN_SET('$project_label', $projects_table.labels)) ";
         }
 
+        $department_id = get_array_value($options, "department_id");
+        if ($department_id) {
+            $where .= " AND $projects_table.department_id=$department_id";
+        }
 
         $deadline = get_array_value($options, "deadline");
         $for_events_table = get_array_value($options, "for_events_table");

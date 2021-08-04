@@ -65,7 +65,7 @@
                     <?php echo form_close(); ?>
                     <?php
                         if (!get_setting("disable_user_invitation_option_by_clients")) {
-                            echo modal_anchor(get_uri("clients/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " . app_lang('send_invitation'), array("class" => "btn btn-default fade-btn hide tab-social-links", "title" => app_lang('send_invitation'), "data-post-client_id" => $login_user->client_id));
+                            echo modal_anchor(get_uri("clients/invitation_modal/".$department->id), "<i data-feather='mail' class='icon-16'></i> " . app_lang('send_invitation'), array("class" => "btn btn-default fade-btn hide tab-social-links", "title" => app_lang('send_invitation'), "data-post-client_id" => $login_user->client_id));
                         }
                         if ($department->client_id == $login_user->id) {
                             echo modal_anchor(get_uri("projects/modal_form/".$department->id), "<i data-feather='plus-circle' class='icon-16'></i> " . app_lang('add_project'), array("class" => "btn btn-default fade-btn hide tab-account-settings", "data-post-client_id" => $login_user->client_id, "title" => app_lang('add_project')));

@@ -15,6 +15,7 @@ class Projects extends Security_Controller {
         $this->Checklist_items_model = model('App\Models\Checklist_items_model');
         $this->Likes_model = model('App\Models\Likes_model');
         $this->Departments_model = model('App\Models\Departments_model');
+        $this->Departments_user_model = model('App\Models\Departments_user_model');
     }
 
     private function can_delete_projects($project = false) {
@@ -383,7 +384,16 @@ class Projects extends Security_Controller {
         if ($estimate_id) {
             $view_data['model_info']->estimate_id = $estimate_id;
         }
-        $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        if($this->login_user->user_type != 'staff') {
+            $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+            $dpts = array();
+            foreach($departs as $row) {
+                $dpts[] = $row->department_id;
+            }
+            $view_data["client_info"] = $this->Departments_model->get_details(array('where_in'=>array('id'=>$dpts)))->getResult();
+        } else {
+            $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        }
         $view_data["custom_fields"] = $this->Custom_fields_model->get_combined_details("projects", $view_data['model_info']->id, $this->login_user->is_admin, $this->login_user->user_type)->getResult();
 
         $view_data['clients_dropdown'] = $this->Clients_model->get_dropdown_list(array("company_name"), "id", array("is_lead" => 0));
@@ -399,7 +409,7 @@ class Projects extends Security_Controller {
     function save() {
 
         $id = $this->request->getPost('id');
-    $department = $this->request->getPost('department');
+        $department = $this->request->getPost('department');
         if ($id) {
             if (!$this->can_edit_projects()) {
                 app_redirect("forbidden");
@@ -427,7 +437,7 @@ class Projects extends Security_Controller {
             "labels" => $this->request->getPost('labels'),
             "status" => $status ? $status : "open",
             "estimate_id" => $estimate_id,
-             "department_id"=>$department
+            "department_id"=>$department
         );
 
         if (!$id) {
@@ -838,8 +848,11 @@ class Projects extends Security_Controller {
             "project_label" => $this->request->getPost("project_label"),
             "custom_fields" => $custom_fields
         );
+        if($dpt_id){
+            $options['department_id'] = $dpt_id;
+        }
 
-        $is_manager = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
+        $is_manager = can_manage_department($this->login_user, $dpt_id);
 
         $list_data = $this->Projects_model->get_details($options)->getResult();
         $result = array();
@@ -1275,7 +1288,9 @@ class Projects extends Security_Controller {
     function project_member_list_data($project_id = 0, $user_type = "") {
         $project = $this->Projects_model->get_details(array('id'=>$project_id))->getRow();
         if($project->created_by != $this->login_user->id) {
-            $this->access_only_team_members();
+            if($this->Departments_user_model->get_all_where(array('department_id'=>$project->department_id, 'user_id'=>$this->login_user->id))->getNumRows() == 0){
+                $this->access_only_team_members();
+            }
         }
         $this->init_project_permission_checker($project_id);
 

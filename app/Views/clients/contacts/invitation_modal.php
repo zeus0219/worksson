@@ -5,6 +5,7 @@
         <div class="form-group mb15">
             <div class="row">
                 <input type="hidden" name="client_id" value="<?php echo $client_info->id; ?>" />
+                <input type="hidden" name="department_id" value="<?php echo isset($department_id) ? $department_id : ''; ?>" />
 
                 <label for="email" class=" col-md-12"><?php echo sprintf(app_lang('invite_an_user'), $client_info->company_name); ?></label>
                 <div class="col-md-12">

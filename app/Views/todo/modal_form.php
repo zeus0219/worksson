@@ -18,12 +18,22 @@
                 ?>
             </div>
         </div>
-          <div class="form-group">
-         
-
-     
-                <div class="col-md-12">
-                       <div class="notepad">
+        <div class="form-group">
+            <div class="col-md-12">
+                <div class="notepad">
+                    <?php 
+                    if($login_user->user_type != 'staff'/*  && $login_user->id != $model_info->created_by */):
+                        echo form_input(array(
+                            "name" => "department",
+                            "value" => $model_info->department_id,
+                            'type'=>'hidden'
+                        ));
+                        echo form_input(array(
+                            "value" => get_department($model_info->department_id)->name,
+                            "class" => "form-control notepad-title",
+                            "readonly"=>"readonly"
+                        ));
+                    else: ?>
                     <select id="ticket_type_id" name="department" class="form-control " required >
                         <?php if (isset($client_info) && !empty($client_info)) {
                             foreach ($client_info as $row) {
@@ -31,11 +41,10 @@
                             }
                         } ?>
 
-
                     </select>
-                       </div>
+                    <?php endif;?>
                 </div>
-            
+            </div>
         </div>
         <div class="form-group">
             <div class="col-md-12">

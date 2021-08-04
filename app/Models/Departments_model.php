@@ -49,6 +49,7 @@ class Departments_model extends Crud_model {
         
         WHERE $departments_table.deleted=0 $where
         ORDER BY $departments_table.id";
+        
         return $this->db->query($sql);
     }
     public function get_one_records($department_id)
@@ -91,12 +92,12 @@ class Departments_model extends Crud_model {
        
         
         $departments_table->where('id', $project_id);
-        $departments_table->update(['deleted'=>1]);
+        $departments_table->delete();
 
         $department_user_table = $db->table('department_user');
 
         $department_user_table->where('department_id', $project_id);
-        $department_user_table->update(['deleted'=>1]);
+        $department_user_table->delete();
        
         // $departments_table = $this->db->prefixTable('departments');
         // $department_user_table = $this->db->prefixTable('department_user');

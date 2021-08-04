@@ -9,6 +9,7 @@ class Clients extends Security_Controller {
 
         //check permission to access this module
         $this->init_permission_checker("client");
+        $this->Departments_user_model = model('App\Models\Departments_user_model');
     }
 
     /* load clients list view */
@@ -1168,14 +1169,19 @@ class Clients extends Security_Controller {
 
     /* list of contacts, prepared for datatable  */
 
-    function contacts_list_data($client_id = 0) {
+    function contacts_list_data($client_id = 0, $dpt_id = '') {
 
         $this->access_only_allowed_members_or_client_contact($client_id);
         $this->can_access_this_client($client_id);
 
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("client_contacts", $this->login_user->is_admin, $this->login_user->user_type);
+        $dpt_users = $this->Departments_user_model->get_all_where(array('department_id'=>$dpt_id))->getResult();
+        $users = array();
+        foreach($dpt_users as $row) {
+            $users[] = $row->user_id;
+        }
 
-        $options = array("user_type" => "client", "client_id" => $client_id, "custom_fields" => $custom_fields, "show_own_clients_only_user_id" => $this->show_own_clients_only_user_id());
+        $options = array("user_type" => "client", "client_id" => $client_id, 'where_in'=>array('id'=>$users),"custom_fields" => $custom_fields, "show_own_clients_only_user_id" => $this->show_own_clients_only_user_id());
         $list_data = $this->Users_model->get_details($options)->getResult();
         $result = array();
 
@@ -1249,7 +1255,7 @@ class Clients extends Security_Controller {
 
     /* open invitation modal */
 
-    function invitation_modal() {
+    function invitation_modal($dpt_id = '') {
         if (get_setting("disable_user_invitation_option_by_clients") && $this->login_user->user_type == "client") {
             app_redirect("forbidden");
         }
@@ -1268,6 +1274,7 @@ class Clients extends Security_Controller {
         $this->access_only_allowed_members_or_client_contact($client_id);
 
         $view_data["client_info"] = $this->Clients_model->get_one($client_id);
+        $view_data["department_id"] = $dpt_id;
         return $this->template->view('clients/contacts/invitation_modal', $view_data);
     }
 
@@ -1282,6 +1289,7 @@ class Clients extends Security_Controller {
         }
 
         $client_id = $this->request->getPost('client_id');
+        $department_id = $this->request->getPost('department_id');
         $this->can_access_this_client($client_id);
 
         $email = trim($this->request->getPost('email'));
@@ -1307,6 +1315,7 @@ class Clients extends Security_Controller {
                 "email" => $email,
                 "type" => "client",
                 "client_id" => $client_id,
+                "department_id" => $department_id,
                 "expire_time" => time() + (24 * 60 * 60) //make the invitation url with 24hrs validity
             ))
         );

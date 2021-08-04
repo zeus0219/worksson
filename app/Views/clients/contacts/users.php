@@ -20,7 +20,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#contact-table").appTable({
-            source: '<?php echo_uri("clients/contacts_list_data/" . $client_id) ?>',
+            source: '<?php echo_uri("clients/contacts_list_data/" . $client_id."/".(isset($department->id) ? $department->id : '')) ?>',
             order: [[1, "asc"]],
             columns: [
                 {title: '', "class": "w50 text-center"},

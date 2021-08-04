@@ -7,29 +7,49 @@ class Todo extends Security_Controller {
     function __construct() {
         parent::__construct();
         $this->Departments_model = model('App\Models\Departments_model');
+        $this->Departments_user_model = model('App\Models\Departments_user_model');
     }
 
     protected function validate_access($todo_info) {
-        if ($this->login_user->id !== $todo_info->created_by) {
-            app_redirect("forbidden");
+        if($this->Departments_user_model->get_all_where(array('department_id'=>$todo_info->department_id, 'user_id'=>$this->login_user->id))->getNumRows() > 0)
+        {
+            return true;
         }
+        app_redirect("forbidden");
     }
 
     //load todo list view
     function index() {
         $this->check_module_availability("module_todo");
-        $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        if($this->login_user->user_type != 'staff') {
+            $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+            $dpts = array();
+            foreach($departs as $row) {
+                $dpts[] = $row->department_id;
+            }
+            $view_data["client_info"] = $this->Departments_model->get_details(array('where_in'=>array('id'=>$dpts)))->getResult();
+        } else {
+            $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        }
         return $this->template->rander("todo/index", $view_data);
     }
 
     function modal_form() {
         $view_data['model_info'] = $this->Todo_model->get_one($this->request->getPost('id'));
-        $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        if($this->login_user->user_type != 'staff') {
+            $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+            $dpts = array();
+            foreach($departs as $row) {
+                $dpts[] = $row->department_id;
+            }
+            $view_data["client_info"] = $this->Departments_model->get_details(array('where_in'=>array('id'=>$dpts)))->getResult();
+        } else {
+            $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        }
         //check permission for saved todo list
         if ($view_data['model_info']->id) {
             $this->validate_access($view_data['model_info']);
         }
-
         $view_data['label_suggestions'] = $this->make_labels_dropdown("to_do", $view_data['model_info']->labels);
         return $this->template->view('todo/modal_form', $view_data);
     }
@@ -41,14 +61,14 @@ class Todo extends Security_Controller {
         ));
 
         $id = $this->request->getPost('id');
-          $department = $this->request->getPost('department');
+        $department = $this->request->getPost('department');
         $data = array(
             "title" => $this->request->getPost('title'),
             "description" => $this->request->getPost('description') ? $this->request->getPost('description') : "",
             "created_by" => $this->login_user->id,
             "labels" => $this->request->getPost('labels') ? $this->request->getPost('labels') : "",
             "start_date" => $this->request->getPost('start_date'),
-              "department_id"=>$department
+            "department_id"=>$department
         );
 
         $data = clean_data($data);
@@ -129,13 +149,15 @@ class Todo extends Security_Controller {
 
         $status = $this->request->getPost('status') ? implode(",", $this->request->getPost('status')) : "";
         $options = array(
-            "created_by" => $this->login_user->id,
             "status" => $status
         );
+        if($dpt_id) {
+            $options["department_id"] = $dpt_id;
+        }
 
         $list_data = $this->Todo_model->get_details($options)->getResult();
         $result = array();
-        $is_manager = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
+        $is_manager = can_manage_department($this->login_user, $dpt_id);
         
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data, $is_manager);
@@ -146,7 +168,8 @@ class Todo extends Security_Controller {
     private function _row_data($id) {
         $options = array("id" => $id);
         $data = $this->Todo_model->get_details($options)->getRow();
-        return $this->_make_row($data);
+        $is_manager = can_manage_department($this->login_user, $data->department_id);
+        return $this->_make_row($data, $is_manager);
     }
 
     private function _make_row($data, $is_manager = false) {

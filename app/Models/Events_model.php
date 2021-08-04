@@ -21,6 +21,10 @@ class Events_model extends Crud_model {
         if ($id) {
             $where .= " AND $events_table.id=$id";
         }
+        $department_id = get_array_value($options, "department_id");
+        if ($department_id) {
+            $where .= " AND $events_table.department_id=$department_id";
+        }
 
         $start_date_query = "";
         $end_date_query = "";

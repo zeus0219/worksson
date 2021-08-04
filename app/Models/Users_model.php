@@ -77,6 +77,7 @@ class Users_model extends Crud_model {
         $user_type = get_array_value($options, "user_type");
         $client_id = get_array_value($options, "client_id");
         $exclude_user_id = get_array_value($options, "exclude_user_id");
+        $where_in = get_array_value($options, "where_in");
 
         if ($id) {
             $where .= " AND $users_table.id=$id";
@@ -102,6 +103,19 @@ class Users_model extends Crud_model {
 
         if ($exclude_user_id) {
             $where .= " AND $users_table.id!=$exclude_user_id";
+        }
+
+        if ($where_in) {
+            foreach($where_in as $k=>$v) {
+                if(is_array($v)) {
+                    $v = implode(',' ,$v);
+                }
+                if(!$v)
+                {
+                    $v = "''";
+                }
+                $where .= " AND $users_table.$k in ($v)";
+            }
         }
 
         $show_own_clients_only_user_id = get_array_value($options, "show_own_clients_only_user_id");

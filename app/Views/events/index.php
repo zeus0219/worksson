@@ -70,7 +70,7 @@ if (isset($client_id)) {
                 event_label = eventLabel || "0";
 
         appLoader.show();
-
+        
         window.fullCalendar = new FullCalendar.Calendar($eventCalendar, {
             locale: AppLanugage.locale,
             height: $(window).height() - 210,
@@ -79,7 +79,7 @@ if (isset($client_id)) {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
             },
-            events: "<?php echo_uri("events/calendar_events/"); ?>" + filter_values + "/" + event_label + "/" + "<?php echo "/$client"; ?>",
+            events: "<?php echo_uri("events/calendar_events/"); ?>" + filter_values + "/" + event_label + "<?php echo $client ? "/$client" : '/0'; ?>" + "<?php echo (isset($department_id) ? "/$department_id" : ''); ?>",
             dayMaxEvents: false,
             dateClick: function (date, jsEvent, view) {
                 $("#add_event_hidden").attr("data-post-start_date", moment(date.date).format("YYYY-MM-DD"));

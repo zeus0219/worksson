@@ -11,7 +11,8 @@ class Events extends Security_Controller {
     function __construct() {
         parent::__construct();
         $this->google_calendar = new Google_calendar();
-                $this->Departments_model = model('App\Models\Departments_model');
+        $this->Departments_model = model('App\Models\Departments_model');
+        $this->Departments_user_model = model('App\Models\Departments_user_model');
 
     }
 
@@ -69,9 +70,18 @@ class Events extends Security_Controller {
         }
 
         $view_data['clients_dropdown'] = $clients_dropdown;
-        $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        if($this->login_user->user_type != 'staff') {
+            $departs = $this->Departments_user_model->get_all_where(array('user_id'=>$this->login_user->id))->getResult();
+            $dpts = array();
+            foreach($departs as $row) {
+                $dpts[] = $row->department_id;
+            }
+            $view_data["client_info"] = $this->Departments_model->get_details(array('where_in'=>array('id'=>$dpts)))->getResult();
+        } else {
+            $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
+        }
         $view_data["can_share_events"] = $this->can_share_events();
-        if(!$view_data["can_share_events"])$view_data["can_share_events"] = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
+        if(!$view_data["can_share_events"])$view_data["can_share_events"] = can_manage_department($this->login_user, $dpt_id);
 
         //prepare label suggestion dropdown
         $view_data['label_suggestions'] = $this->make_labels_dropdown("event", $model_info->labels);
@@ -95,7 +105,7 @@ class Events extends Security_Controller {
         //convert to 24hrs time format
         $start_time = $this->request->getPost('start_time');
         $end_time = $this->request->getPost('end_time');
-          $department = $this->request->getPost('department');
+        $department = $this->request->getPost('department');
 
         if (get_setting("time_format") != "24_hours") {
             $start_time = convert_time_to_24hours_format($start_time);
@@ -237,7 +247,7 @@ class Events extends Security_Controller {
     }
 
     //get calendar event
-    function calendar_events($filter_values = "", $event_label_id = 0, $client_id = 0) {
+    function calendar_events($filter_values = "", $event_label_id = 0, $client_id = 0, $dpt_id = '') {
         $start = $_GET["start"];
         $end = $_GET["end"];
 
@@ -251,8 +261,13 @@ class Events extends Security_Controller {
             if ($this->login_user->user_type == "client") {
                 $is_client = true;
             }
-
             $options_of_events = array("user_id" => $this->login_user->id, "team_ids" => $this->login_user->team_ids, "client_id" => $client_id, "start_date" => $start, "end_date" => $end, "include_recurring" => true, "is_client" => $is_client, "label_id" => $event_label_id);
+            if($dpt_id) {
+                $options_of_events['department_id'] = $dpt_id;
+                unset($options_of_events['user_id']);
+                unset($options_of_events['team_ids']);
+                unset($options_of_events['client_id']);
+            }
 
             $list_data_of_events = $this->Events_model->get_details($options_of_events)->getResult();
 
@@ -282,7 +297,16 @@ class Events extends Security_Controller {
             //get all approved leaves
             $leave_access_info = $this->get_access_info("leave");
             $options_of_leaves = array("start_date" => $start, "end_date" => $end, "login_user_id" => $this->login_user->id, "access_type" => $leave_access_info->access_type, "allowed_members" => $leave_access_info->allowed_members, "status" => "approved");
-
+            
+            if($dpt_id) {
+                $dpt_users = $this->Departments_user_model->get_all_where(array('department_id'=>$dpt_id))->getResult();
+                $users = array();
+                foreach($dpt_users as $row) {
+                    $users[] = $row->user_id;
+                }
+                $options_of_leaves['allowed_members'] = $users;
+            }
+            
             $list_data_of_leaves = $this->Leave_applications_model->get_list($options_of_leaves)->getResult();
 
             foreach ($list_data_of_leaves as $leave) {
@@ -299,7 +323,10 @@ class Events extends Security_Controller {
                 "client_id" => $client_id,
                 "for_events_table" => true
             );
-
+            if($dpt_id) {
+                $options['department_id'] = $dpt_id;
+                unset($options['client_id']);
+            }
             if ($this->login_user->user_type == "staff") {
                 if (!$this->can_manage_all_projects()) {
                     $options["user_id"] = $this->login_user->id;
