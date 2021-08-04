@@ -68,8 +68,8 @@ class Departments extends Security_Controller {
         foreach ($list_data as $data) {
             $data->symbol = $this->Clients_model->get_one_where($data->client_id)->currency_symbol;
 
-            $row = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label, ($this->login_user->id == $data->manager || $this->login_user->id == $data->client_id));
-            if($data->manager && $data->manager != $data->client_id) {
+            $row = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label, ($this->login_user->id == $data->manager || $this->login_user->id == $data->dclient_id));
+            if($data->manager && $data->manager != $data->dclient_id) {
                 $manager = $this->Users_model->get_one($data->manager);
                 $row[9] = "<span class='avatar avatar-xs'><img src='".get_avatar($manager->image)."' alt='" . $manager->first_name . "' style='margin-right: 7px;'>" . $manager->first_name . " </span>";
             }
@@ -115,7 +115,7 @@ class Departments extends Security_Controller {
 
         $contact_info = $data->phone;
         $optoins = "";
-        if($is_manager) {
+        if($this->login_user->user_type == 'staff' || $is_manager) {
             // if (get_setting("client_can_edit_departments")) {
             $optoins .= modal_anchor(get_uri("departments/department_modal_edit"), "<i data-feather='edit' class='icon-16'></i>", array("class" => "edit", "title" => 'Edit department', "data-post-id" => $data->dept_id));
             // }

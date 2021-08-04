@@ -1175,13 +1175,16 @@ class Clients extends Security_Controller {
         $this->can_access_this_client($client_id);
 
         $custom_fields = $this->Custom_fields_model->get_available_fields_for_table("client_contacts", $this->login_user->is_admin, $this->login_user->user_type);
-        $dpt_users = $this->Departments_user_model->get_all_where(array('department_id'=>$dpt_id))->getResult();
-        $users = array();
-        foreach($dpt_users as $row) {
-            $users[] = $row->user_id;
+        
+        $options = array("user_type" => "client", "client_id" => $client_id, "custom_fields" => $custom_fields, "show_own_clients_only_user_id" => $this->show_own_clients_only_user_id());
+        if($dpt_id) {
+            $dpt_users = $this->Departments_user_model->get_all_where(array('department_id'=>$dpt_id))->getResult();
+            $users = array();
+            foreach($dpt_users as $row) {
+                $users[] = $row->user_id;
+            }
+            $options['where_in'] = array('id'=>$users);
         }
-
-        $options = array("user_type" => "client", "client_id" => $client_id, 'where_in'=>array('id'=>$users),"custom_fields" => $custom_fields, "show_own_clients_only_user_id" => $this->show_own_clients_only_user_id());
         $list_data = $this->Users_model->get_details($options)->getResult();
         $result = array();
 

@@ -12,7 +12,7 @@
                             <div class="col-md-6 col-sm-12 d-flex">
                                 <?php echo view("projects/project_task_pie_chart"); ?>
                             </div>
-                            <div class="col-md-6 col-sm-12">
+                            <div class="col-12">
                                 <?php echo view("projects/client_contacts/index"); ?>
                             </div>  
                             <?php if ($show_activity) { ?>
