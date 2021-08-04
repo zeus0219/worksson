@@ -135,7 +135,7 @@ class Todo extends Security_Controller {
 
         $list_data = $this->Todo_model->get_details($options)->getResult();
         $result = array();
-        $is_manager = get_department($dpt_id)->client_id == $this->login_user->id;
+        $is_manager = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
         
         foreach ($list_data as $data) {
             $result[] = $this->_make_row($data, $is_manager);

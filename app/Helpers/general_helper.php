@@ -1809,7 +1809,7 @@ if (!function_exists('get_avatar_department')) {
 
             if (is_array($file)) {
                 // print_r($file);
-                if (isset($file) && $file[0] != '') {
+                if (isset($file[0]) && $file[0] != '') {
                     return get_source_url_of_file($file[0], get_setting("deparment_files_path") . "/", "thumbnail");
                 } else {
                     return get_source_url_of_file($file, get_setting("profile_image_path") . "/", "thumbnail");

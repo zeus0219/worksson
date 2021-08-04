@@ -26,8 +26,21 @@ class Departments_model extends Crud_model {
         $image = get_array_value($options, "image");
         $client_id = get_array_value($options, "client_id");
         $status = get_array_value($options, "status");
+        $where_in = get_array_value($options, "where_in");
         if ($client_id) {
             $where .= " AND $departments_table.client_id=$client_id";
+        }
+        if($where_in) {
+            foreach($where_in as $k=>$v){
+                if(is_array($v)) {
+                    $v = implode(',' ,$v);
+                }
+                if(!$v)
+                {
+                    $v = "''";
+                }
+                $where .= " AND $departments_table.$k in ($v)";
+            }
         }
         //prepare full query string
         $sql = "SELECT *,$departments_table.id as dept_id,$departments_table.status as dstatus,$departments_table.image as dimage,$departments_table.client_id as dclient_id

@@ -1,7 +1,7 @@
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 <?php echo form_open_multipart(get_uri("departments/save_department"), array("id" => "department-form", "class" => "general-form", "role" => "form")); ?>
-<div class="modal-body clearfix post-dropzone" id="new-ticket-dropzone">
-    <div class="container-fluid">
+<div class="modal-body clearfix">
+    <div class="container-fluid post-dropzone" id="new-ticket-dropzone">
         <br />
 
 
@@ -79,15 +79,20 @@
                 <label for="description" class=" col-md-3"><strong><?php echo 'Budget';?></strong></label>
 
                 <div class=" col-md-9">
-                    <?php
-                    echo form_input(array(
-                        "id" => "budget",
-                        "name" => "budget",
-                        "value" => 0,
-                        "class" => "form-control",
-                        "placeholder" => app_lang('Budget'),
-                    ));
-                    ?>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><?php echo ($currency ? $currency : "$"); ?></span>
+                        </div>
+                        <?php
+                        echo form_input(array(
+                            "id" => "budget",
+                            "name" => "budget",
+                            "value" => 0,
+                            "class" => "form-control",
+                            "placeholder" => app_lang('Budget'),
+                        ));
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>

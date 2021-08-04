@@ -71,7 +71,7 @@ class Events extends Security_Controller {
         $view_data['clients_dropdown'] = $clients_dropdown;
         $view_data["client_info"] = $this->Departments_model->get_all()->getResult();
         $view_data["can_share_events"] = $this->can_share_events();
-        if(!$view_data["can_share_events"])$view_data["can_share_events"] = get_department($dpt_id)->client_id == $this->login_user->id;
+        if(!$view_data["can_share_events"])$view_data["can_share_events"] = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
 
         //prepare label suggestion dropdown
         $view_data['label_suggestions'] = $this->make_labels_dropdown("event", $model_info->labels);

@@ -40,11 +40,6 @@
         <div class="col-md-12">
             <h2 class="p10 m0"><strong> <?php echo $dept_info->name; ?> </strong></h2>
             <p class="p10 m0"><?php echo substr($dept_info->description, 0, 200); ?> </p>
-            <?php if(strlen($dept_info->description) > 200){ ?>
-            <p class="p10 m0">
-                <?php echo modal_anchor(get_uri("departments/department_view_modal"), 'See more...', array("class" => "text-white text-right", "title" => 'See more...', "data-post-depart_id" => $dept_info->id)); ?>
-            </p>
-            <?php }?>
             <?php if(isset($department) && $department):?>
                 <div class="custom-btn-group">
                     <?php echo form_open(get_uri("todo/save"), array("id" => "todo-inline-form", "class" => "fade-btn hide tab-company-info", "role" => "form")); ?>
@@ -80,6 +75,11 @@
                     ?>            
                 </div>
             <?php endif;?>
+            <?php if(strlen($dept_info->description) > 200){ ?>
+            <p class="p10 m0">
+                <?php echo modal_anchor(get_uri("departments/department_view_modal"), 'See more...', array("class" => "text-white text-right", "title" => 'See more...', "data-post-depart_id" => $dept_info->id)); ?>
+            </p>
+            <?php }?>
         </div>
     </div>
 </div>

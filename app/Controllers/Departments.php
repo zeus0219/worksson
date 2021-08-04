@@ -59,7 +59,13 @@ class Departments extends Security_Controller {
             $hide_primary_contact_label = true;
         }
         foreach ($list_data as $data) {
-            $result[] = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label);
+            $data->symbol = $this->Clients_model->get_one_where($data->client_id)->currency_symbol;
+            $row = $this->_make_department_row($data, $custom_fields, $hide_primary_contact_label);
+            if($data->manager && $data->manager != $data->client_id) {
+                $manager = $this->Users_model->get_one($data->manager);
+                $row[9] = "<span class='avatar avatar-xs'><img src='".get_avatar($manager->image)."' alt='" . $manager->first_name . "' style='margin-right: 7px;'>" . $manager->first_name . " </span>";
+            }
+            $result[] = $row;
         }
         echo json_encode(array("data" => $result));
     }
@@ -138,7 +144,7 @@ class Departments extends Security_Controller {
             $countProject,
             modal_anchor(get_uri("team_members/invitation_modal"), "<i data-feather='mail' class='icon-16'></i> " , array("class" => "btn btn-default", "title" => app_lang('send_invitation'))),
             '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar icon"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> <span class="bg-success badge">' . $countEvent . '</span>',
-            $data->budget,
+            $data->budget ? to_currency($data->budget, $data->symbol) : "-",
             $full_name,
             $optoins,
 
@@ -165,7 +171,10 @@ class Departments extends Security_Controller {
         ));
         $depart_id = $this->request->getPost('id');
         $client_id = $this->request->getPost('client_id');
-        $view_data["client_info"] = $this->Users_model->get_all()->getResult();
+        $view_data["currency"] = $this->Clients_model->get_one_where($client_id)->currency_symbol;
+        $view_data["client_info"] = $this->Users_model->get_all_where(array('client_id'=> $this->login_user->client_id))->getResult();
+        
+        $view_data["client_id"] = $this->login_user->client_id;
         return $this->template->view('clients/departments/department_modal', $view_data);
     }
     function department_modal_edit() {
@@ -181,7 +190,8 @@ class Departments extends Security_Controller {
         $where = array('department_id'=>$view_data["depart_info"]->id);
         $view_data["users_info"] = $this->Departments_user_model->get_all_where($where)->getResult();
         $view_data['user_id'] = array_column($view_data["users_info"], 'user_id');
-        $view_data["client_info"] = $this->Users_model->get_all()->getResult();
+        $view_data["client_info"] = $this->Users_model->get_all_where(array('client_id'=> $this->login_user->client_id))->getResult();
+        $view_data["currency"] = $this->Clients_model->get_one_where($view_data["depart_info"]->client_id)->currency_symbol;
         return $this->template->view('clients/departments/department_modal_edit', $view_data);
     }
 
@@ -193,8 +203,9 @@ class Departments extends Security_Controller {
         }
 
         $client_id = $this->login_user->id; //user id 
-        if($this->request->getPost('client_id')) {
-            $client_id = $this->request->getPost('client_id');
+        $manager = $client_id;
+        if($this->request->getPost('manager')) {
+            $manager = $this->request->getPost('manager');
         }
         $name = trim($this->request->getPost('name'));
         $slug = (str_replace(' ', '-', strtolower($name)));
@@ -215,6 +226,7 @@ class Departments extends Security_Controller {
             "description"=>$description,
             'status'=> $status,
             'client_id'=>$client_id,
+            'manager'=>$manager,
             'budget'=> $budget,
             'image'=> $files_data,
             'slug'=>$slug 
@@ -243,9 +255,10 @@ class Departments extends Security_Controller {
         if (!get_setting("client_can_edit_departments")) {
             app_redirect("forbidden");
         }
-        $client_id = $this->login_user->id;
-        if($this->request->getPost('client_id')) {
-            $client_id = $this->request->getPost('client_id');
+        $client_id = $this->login_user->id; //user id 
+        $manager = $client_id;
+        if($this->request->getPost('manager')) {
+            $manager = $this->request->getPost('manager');
         }
         $name = trim($this->request->getPost('name'));
         $description = trim($this->request->getPost('description'));
@@ -269,6 +282,7 @@ class Departments extends Security_Controller {
                 'status'=> $status,
                 'budget'=> $budget,
                 'client_id'=>$client_id,
+                'manager'=>$manager,
                 'image'=> $files_data
             );
         }else{
@@ -278,6 +292,7 @@ class Departments extends Security_Controller {
                 'status'=> $status,
                 'budget'=> $budget,
                 'client_id'=>$client_id,
+                'manager'=>$manager,
                 //'image'=> $files_data
                
             );
@@ -286,7 +301,16 @@ class Departments extends Security_Controller {
         
         if ($save_id) {
             $this->Departments_user_model->delete_department_users($department_id);
-
+            $this->Departments_user_model->ci_save(array(
+                "department_id" => $department_id,
+                "user_id" => $client_id,
+            ));
+            if($client_id != $manager) {
+                $this->Departments_user_model->ci_save(array(
+                    "department_id" => $department_id,
+                    "user_id" => $manager,
+                ));
+            }
             if(isset($people) && !empty($people)){
                 foreach($people as $key=>$value){
                     $people_data = array(
@@ -1860,7 +1884,7 @@ function department_view_modal() {
 
         $view_data['client_id'] = $this->login_user->client_id;
         $view_data['page_type'] = "full";
-        $view_data["can_create_projects"] = get_department($dpt_id)->client_id == $this->login_user->id;
+        $view_data["can_create_projects"] = get_department($dpt_id)->client_id == $this->login_user->id || get_department($dpt_id)->manager == $this->login_user->id;
         $view_data['department_id'] = $dpt_id;
         return $this->template->view("clients/projects/index", $view_data);
     }
