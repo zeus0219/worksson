@@ -22,7 +22,7 @@
             <div class="col-md-12">
                 <div class="notepad">
                     <?php 
-                    if($login_user->user_type != 'staff'/*  && $login_user->id != $model_info->created_by */):
+                    if($login_user->user_type != 'staff' && $model_info->department_id/*  && $login_user->id != $model_info->created_by */):
                         echo form_input(array(
                             "name" => "department",
                             "value" => $model_info->department_id,

@@ -56,6 +56,7 @@ class Events extends Security_Controller {
             $view_data['client_id'] = $client_info->id;
         }
 
+        $view_data['department_id'] = $dpt_id;
         $view_data['model_info'] = $model_info;
         $view_data['members_and_teams_dropdown'] = json_encode(get_team_members_and_teams_select2_data_list());
         $view_data['time_format_24_hours'] = get_setting("time_format") == "24_hours" ? true : false;

@@ -64,7 +64,7 @@
                 <label for="ticket_type_id" class=" col-md-3"><strong><?php echo app_lang('Department'); ?></strong></label>
                 <div class="col-md-9">
                 <?php     
-                    if($login_user->user_type != 'staff'/*  && $login_user->id != $model_info->created_by */):
+                    if($login_user->user_type != 'staff' && isset($department_id) && $department_id/*  && $login_user->id != $model_info->created_by */):
                         echo form_input(array(
                             "name" => "department",
                             "value" => $department_id,

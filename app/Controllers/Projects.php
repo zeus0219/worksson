@@ -857,12 +857,14 @@ class Projects extends Security_Controller {
         $list_data = $this->Projects_model->get_details($options)->getResult();
         $result = array();
         foreach ($list_data as $data) {
-            $row = $this->_make_row($data, $custom_fields, $is_manager);
-            $depart = $this->Departments_model->get_details(array('id'=>$data->department_id))->getRow();
-            $image_url = get_avatar_department($depart->dimage);
+            $row = $this->_make_row($data, $custom_fields, $is_manager, $dpt_id);
+            $depart = $this->Departments_model->get_one($data->department_id);
+            $image_url = get_avatar_department($depart->image);
+            
             $row[0] = "<span class='avatar avatar-xs'><img src='$image_url' alt='...'></span>";
             $result[] = $row;
         }
+        
         echo json_encode(array("data" => $result));
     }
 
@@ -883,7 +885,7 @@ class Projects extends Security_Controller {
 
     /* prepare a row of project list table */
 
-    private function _make_row($data, $custom_fields, $is_manager = false) {
+    private function _make_row($data, $custom_fields, $is_manager = false, $dpt_id) {
 
         $progress = $data->total_points ? round(($data->completed_points / $data->total_points) * 100) : 0;
 
@@ -917,7 +919,7 @@ class Projects extends Security_Controller {
 
         $optoins = "";
         if ($this->can_edit_projects()) {
-            $optoins .= modal_anchor(get_uri("projects/modal_form"), "<i data-feather='edit' class='icon-16'></i>", array("class" => "edit", "title" => app_lang('edit_project'), "data-post-id" => $data->id));
+            $optoins .= modal_anchor(get_uri("projects/modal_form/$dpt_id"), "<i data-feather='edit' class='icon-16'></i>", array("class" => "edit", "title" => app_lang('edit_project'), "data-post-id" => $data->id));
         }
 
         if ($this->can_delete_projects($data) && ($this->login_user->user_type == 'staff' || $is_manager)) {

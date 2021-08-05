@@ -26,18 +26,9 @@ class Posts_model extends Crud_model {
             $where .= " AND $posts_table.id=$id";
         }
 
-        $where_in = get_array_value($options, "where_in");
-        if($where_in) {
-            foreach($where_in as $k=>$v){
-                if(is_array($v)) {
-                    $v = implode(',' ,$v);
-                }
-                if(!$v)
-                {
-                    $v = "''";
-                }
-                $where .= " AND $posts_table.$k in ($v)";
-            }
+        $department_id = get_array_value($options, "department_id");
+        if ($department_id) {
+            $where .= " AND $posts_table.department_id=$department_id";
         }
 
         //show the main posts in descending mode

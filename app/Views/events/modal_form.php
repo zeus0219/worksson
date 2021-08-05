@@ -46,18 +46,29 @@
                 <label for="ticket_type_id" class=" col-md-3"><strong><?php echo 'Add department' //app_lang('ticket_type'); 
                                                                         ?></strong></label>
                 <div class="col-md-9">
-                    <select id="ticket_type_id" name="department" class="select2 " required >
-                        <?php if (isset($client_info) && !empty($client_info)) {
-                            foreach ($client_info as $row) {
-                                echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
-                            }
-                        } ?>
-
-
-                    </select>
-                    <?php
-                    //echo form_dropdown("ticket_type_id", $ticket_types_dropdown, $model_info->ticket_type_id, "class='select2'");
+                <?php     
+                    if($login_user->user_type != 'staff' && isset($department_id) && $department_id/*  && $login_user->id != $model_info->created_by */):
+                        echo form_input(array(
+                            "name" => "department",
+                            "value" => $department_id,
+                            'type'=>'hidden'
+                        ));
+                        echo form_input(array(
+                            "id" => "ticket_type_id",
+                            "value" => get_department($department_id)->name,
+                            "class" => "form-control",
+                            "disabled" => "disabled"
+                        ));
                     ?>
+                    <?php else:?>
+                        <select id="ticket_type_id" name="department" class="select2 " required >
+                            <?php if (isset($client_info) && !empty($client_info)) {
+                                foreach ($client_info as $row) {
+                                    echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
+                                }
+                            } ?>
+                    </select>
+                    <?php endif;?>
                 </div>
             </div>
         </div>

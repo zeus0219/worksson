@@ -76,18 +76,6 @@ if (!function_exists('timeline_widget')) {
         } else {
             $view_data["is_first_load"] = false;
         }
-        if(!isset($params['department_id']) || !$params['department_id']) {
-            $ci = new Security_Controller(false);
-            $Departments_user_model = model("App\Models\Departments_user_model");
-            $dpt = $Departments_user_model->get_all_where(array('user_id'=>$ci->login_user->id))->getResult();
-            $dpt_ids = array();
-            foreach($dpt as $row) {
-                $dpt_ids[] = $row->department_id;
-            }
-        } else {
-            $dpt_ids[] = $params['department_id'];
-        }
-        $params['where_in'] = array('department_id'=>$dpt_ids);
 
         $Posts_model = model("App\Models\Posts_model");
         $logs = $Posts_model->get_details($params);
