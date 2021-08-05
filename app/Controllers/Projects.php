@@ -885,7 +885,7 @@ class Projects extends Security_Controller {
 
     /* prepare a row of project list table */
 
-    private function _make_row($data, $custom_fields, $is_manager = false, $dpt_id) {
+    private function _make_row($data, $custom_fields, $is_manager = false, $dpt_id = '') {
 
         $progress = $data->total_points ? round(($data->completed_points / $data->total_points) * 100) : 0;
 
