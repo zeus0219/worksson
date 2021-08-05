@@ -232,12 +232,12 @@ if (!function_exists('active_menu')) {
                 $menu_url = $menu["url"];
 
                 //compare with current url
-                if ($menu_url === $current_url || get_uri($menu_url) === $current_url) {
+                if (strtolower($menu_url) === strtolower($current_url) || strtolower(get_uri($menu_url)) === strtolower($current_url)) {
                     $found_url_active_key = $key;
                 }
 
                 //compare with controller name
-                if ($menu_name === $controller_name) {
+                if (strtolower($menu_name) === strtolower($controller_name)) {
                     $found_controller_active_key = $key;
                 }
 
@@ -254,14 +254,14 @@ if (!function_exists('active_menu')) {
                             $sub_menu_url = $sub_menu["url"];
 
                             //compare with current url
-                            if ($sub_menu_url === $current_url || get_uri($sub_menu_url) === $current_url) {
+                            if (strtolower($sub_menu_url) === strtolower($current_url) || strtolower(get_uri($sub_menu_url)) === strtolower($current_url)) {
                                 $found_url_active_key = $key;
                             }
 
                             //compare with controller name
-                            if (get_array_value($sub_menu, "name") === $controller_name) {
+                            if (strtolower(get_array_value($sub_menu, "name")) === strtolower($controller_name)) {
                                 $found_controller_active_key = $key;
-                            } else if (get_array_value($sub_menu, "category") === $controller_name) {
+                            } else if (strtolower(get_array_value($sub_menu, "category")) === strtolower($controller_name)) {
                                 $found_controller_active_key = $key;
                             }
 

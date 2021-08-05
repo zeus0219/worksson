@@ -6,6 +6,7 @@
         </div>
         <div id="post-dropzone" class="post-dropzone box-content form-group">
             <input type="hidden" name="post_id" value="<?php echo isset($post_id) ? $post_id : 0; ?>">
+            <input type="hidden" name="department_id" value="<?php echo isset($department_id) ? $department_id : '' ?>">
             <input type="hidden" name="reload_list" value="1">
             <?php
             echo form_textarea(array(

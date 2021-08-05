@@ -45,6 +45,7 @@ class Timeline extends Security_Controller {
             "created_at" => get_current_utc_time(),
             "post_id" => $post_id,
             "description" => $this->request->getPost('description'),
+            "department_id" => $this->request->getPost('department_id'),
             "share_with" => ""
         );
 

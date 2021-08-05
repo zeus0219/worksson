@@ -1,8 +1,8 @@
 <div class="box">
     <div class="box-content">
         <div id="timeline-content" class="page-wrapper clearfix mb20">
-            <?php echo view("timeline/post_form"); ?>
-            <?php echo timeline_widget(array("limit" => 20, "offset" => 0, "is_first_load" => true)); ?>
+            <?php echo view("timeline/post_form", array('department_id'=>(isset($department_id) ? $department_id : ''))); ?>
+            <?php echo timeline_widget(array("limit" => 20, "offset" => 0, "is_first_load" => true, 'department_id'=>(isset($department_id) ? $department_id : ''))); ?>
         </div>
     </div>
 

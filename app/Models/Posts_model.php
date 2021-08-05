@@ -26,6 +26,20 @@ class Posts_model extends Crud_model {
             $where .= " AND $posts_table.id=$id";
         }
 
+        $where_in = get_array_value($options, "where_in");
+        if($where_in) {
+            foreach($where_in as $k=>$v){
+                if(is_array($v)) {
+                    $v = implode(',' ,$v);
+                }
+                if(!$v)
+                {
+                    $v = "''";
+                }
+                $where .= " AND $posts_table.$k in ($v)";
+            }
+        }
+
         //show the main posts in descending mode
         //but show the replies in ascedning mode
         $sort = " DESC";
