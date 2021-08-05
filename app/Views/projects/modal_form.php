@@ -67,12 +67,12 @@
                     if($login_user->user_type != 'staff'/*  && $login_user->id != $model_info->created_by */):
                         echo form_input(array(
                             "name" => "department",
-                            "value" => $model_info->department_id,
+                            "value" => $department_id,
                             'type'=>'hidden'
                         ));
                         echo form_input(array(
                             "id" => "ticket_type_id",
-                            "value" => get_department($model_info->department_id)->name,
+                            "value" => get_department($department_id)->name,
                             "class" => "form-control",
                             "disabled" => "disabled"
                         ));

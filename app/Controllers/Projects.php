@@ -877,7 +877,8 @@ class Projects extends Security_Controller {
         );
 
         $data = $this->Projects_model->get_details($options)->getRow();
-        return $this->_make_row($data, $custom_fields);
+        $is_manager = can_manage_department($this->login_user, $data->department_id);
+        return $this->_make_row($data, $custom_fields, $is_manager);
     }
 
     /* prepare a row of project list table */
