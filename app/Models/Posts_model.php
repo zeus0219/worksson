@@ -29,6 +29,8 @@ class Posts_model extends Crud_model {
         $department_id = get_array_value($options, "department_id");
         if ($department_id) {
             $where .= " AND $posts_table.department_id=$department_id";
+        } else {
+            $where .= " AND $posts_table.department_id=0";
         }
 
         //show the main posts in descending mode
