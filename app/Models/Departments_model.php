@@ -59,6 +59,7 @@ class Departments_model extends Crud_model {
         FROM department_user
         LEFT JOIN users ON users.id=department_user.user_id
         WHERE department_user.deleted=0 and users.deleted=0 and users.status ='active' and department_user.department_id=$department_id
+        GROUP BY users.id
         ORDER BY users.id";
         
         $users_info= $this->db->query($sql)->getResult();
