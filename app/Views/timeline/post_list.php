@@ -36,7 +36,7 @@
                                 <span><?php echo format_to_relative_time($post->created_at, true, true); ?></span>
                             </div>
                         <?php } ?>
-                        <div class="card clearfix mt15" style="<?php if(!isset($department_id) || !$department_id){echo "border: 1px solid rgb(232, 235, 240);border-radius: 5px;";} ?>">
+                        <div class="card clearfix mt15">
 
                             <div class="card-body">
                                 <div class="clearfix mb15">

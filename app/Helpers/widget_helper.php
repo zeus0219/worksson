@@ -65,7 +65,6 @@ if (!function_exists('activity_logs_widget')) {
 if (!function_exists('timeline_widget')) {
 
     function timeline_widget($params = array()) {
-        $view_data = $params;
         $limit = get_array_value($params, "limit");
         $limit = $limit ? $limit : "20";
         $offset = get_array_value($params, "offset");

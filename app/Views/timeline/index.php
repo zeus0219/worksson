@@ -3,7 +3,7 @@
         <div 
             id="timeline-content" 
             class="page-wrapper clearfix mb20 <?php if(!isset($department_id) || !$department_id){echo "col-md-9 m-auto";} ?>"
-            style="<?php if(!isset($department_id) || !$department_id){echo "border: 1px solid rgb(232, 235, 240);border-radius: 5px;";} ?>"
+            style="<?php if(!isset($department_id) || !$department_id){echo "border: solid rgb(232, 235, 240); border-width: 0px 1px; border-radius: 5px;";} ?>"
         >
             <?php echo view("timeline/post_form", array('department_id'=>(isset($department_id) ? $department_id : ''))); ?>
             <?php echo timeline_widget(array("limit" => 20, "offset" => 0, "is_first_load" => true, 'department_id'=>(isset($department_id) ? $department_id : ''))); ?>
