@@ -20,27 +20,27 @@
                     </div>
                 </div>
             </div>
-              <div class="form-group">
-            <div class="row">
+            <!-- <div class="form-group">
+                <div class="row">
 
-                <label for="ticket_type_id" class=" col-md-2"><?php echo 'Add department' //app_lang('ticket_type'); 
-                                                                        ?></label>
-                <div class="col-md-10">
-                    <select id="ticket_type_id" name="department" class="select2 " required >
-                        <?php if (isset($client_info) && !empty($client_info)) {
-                            foreach ($client_info as $row) {
-                                echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
-                            }
-                        } ?>
+                    <label for="ticket_type_id" class=" col-md-2"><?php echo 'Add department' //app_lang('ticket_type'); 
+                                                                            ?></label>
+                    <div class="col-md-10">
+                        <select id="ticket_type_id" name="department" class="select2 " required >
+                            <?php if (isset($client_info) && !empty($client_info)) {
+                                foreach ($client_info as $row) {
+                                    echo '<option value="' . $row->id . '">' . $row->name . ' </option>';
+                                }
+                            } ?>
 
 
-                    </select>
-                    <?php
-                    //echo form_dropdown("ticket_type_id", $ticket_types_dropdown, $model_info->ticket_type_id, "class='select2'");
-                    ?>
+                        </select>
+                        <?php
+                        //echo form_dropdown("ticket_type_id", $ticket_types_dropdown, $model_info->ticket_type_id, "class='select2'");
+                        ?>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </div> -->
             <div class="form-group">
                 <div class="row">
                     <label for="subject" class=" col-md-2"><?php echo app_lang('subject'); ?></label>

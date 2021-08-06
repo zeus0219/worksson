@@ -240,7 +240,7 @@ class Messages extends Security_Controller {
             "message" => $this->request->getPost('message'),
             "created_at" => get_current_utc_time(),
             "deleted_by_users" => "",
-               "department_id"=>$department
+            //    "department_id"=>$department
         );
 
         $message_data = clean_data($message_data);

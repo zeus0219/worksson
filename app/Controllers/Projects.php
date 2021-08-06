@@ -852,12 +852,10 @@ class Projects extends Security_Controller {
             $options['department_id'] = $dpt_id;
         }
 
-        $is_manager = can_manage_department($this->login_user, $dpt_id);
-
         $list_data = $this->Projects_model->get_details($options)->getResult();
         $result = array();
         foreach ($list_data as $data) {
-            $result[]  = $this->_make_row($data, $custom_fields, $is_manager, $dpt_id);
+            $result[]  = $this->_make_row($data, $custom_fields, $dpt_id);
         }
         
         echo json_encode(array("data" => $result));
@@ -874,13 +872,12 @@ class Projects extends Security_Controller {
         );
 
         $data = $this->Projects_model->get_details($options)->getRow();
-        $is_manager = can_manage_department($this->login_user, $data->department_id);
-        return $this->_make_row($data, $custom_fields, $is_manager);
+        return $this->_make_row($data, $custom_fields);
     }
 
     /* prepare a row of project list table */
 
-    private function _make_row($data, $custom_fields, $is_manager = false, $dpt_id = '') {
+    private function _make_row($data, $custom_fields, $dpt_id = '') {
 
         $progress = $data->total_points ? round(($data->completed_points / $data->total_points) * 100) : 0;
 
@@ -911,7 +908,8 @@ class Projects extends Security_Controller {
             $project_labels = make_labels_view_data($data->labels_list, true);
             $title .= "<br />" . $project_labels;
         }
-
+        // $is_manager = can_manage_department($this->login_user, $data->department_id) || $data->department_id == '0';
+        $is_manager = true;
         $optoins = "";
         if ($this->can_edit_projects()) {
             $optoins .= modal_anchor(get_uri("projects/modal_form/$dpt_id"), "<i data-feather='edit' class='icon-16'></i>", array("class" => "edit", "title" => app_lang('edit_project'), "data-post-id" => $data->id));
