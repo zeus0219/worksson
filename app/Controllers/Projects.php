@@ -857,12 +857,7 @@ class Projects extends Security_Controller {
         $list_data = $this->Projects_model->get_details($options)->getResult();
         $result = array();
         foreach ($list_data as $data) {
-            $row = $this->_make_row($data, $custom_fields, $is_manager, $dpt_id);
-            $depart = $this->Departments_model->get_one($data->department_id);
-            $image_url = get_avatar_department($depart->image);
-            
-            $row[0] = "<span class='avatar avatar-xs'><img src='$image_url' alt='...'></span>";
-            $result[] = $row;
+            $result[]  = $this->_make_row($data, $custom_fields, $is_manager, $dpt_id);
         }
         
         echo json_encode(array("data" => $result));
@@ -930,10 +925,11 @@ class Projects extends Security_Controller {
         if ($this->login_user->user_type == "staff" && !$this->can_create_projects()) {
             $price = "-";
         }
-
+        $depart = $this->Departments_model->get_one($data->department_id);
+        $image_url = get_avatar_department($depart->image);
 
         $row_data = array(
-            anchor(get_uri("projects/view/" . $data->id), $data->id),
+            "<span class='avatar avatar-xs'><img src='$image_url' alt='...'></span>",
             $title,
             anchor(get_uri("clients/view/" . $data->client_id), $data->company_name),
             $price,

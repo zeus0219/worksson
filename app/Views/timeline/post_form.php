@@ -41,13 +41,7 @@
         $("#post-form").appForm({
             isModal: false,
             onSuccess: function (result) {
-                if ($("body").hasClass("dropzone-disabled")) {
-                    location.reload();
-                } else {
-                    $("#post_description").val("");
-                    $("#timeline").prepend(result.data);
-                    dropzone.removeAllFiles();
-                }
+                location.reload();
             }
         });
 

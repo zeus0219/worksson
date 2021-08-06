@@ -241,6 +241,11 @@ if (!function_exists('active_menu')) {
                     $found_controller_active_key = $key;
                 }
 
+                //compare with controller name
+                // if (strtolower($menu_name) == "timeline" && strtolower($controller_name) == 'dashboard') {
+                //     $found_controller_active_key = $key;
+                // }
+
                 //compare with some special links
                 if ($uri_string == "projects/all_tasks_kanban" && $menu_url == "projects/all_tasks") {
                     $found_special_active_key = $key;

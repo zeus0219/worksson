@@ -6,6 +6,9 @@
     if ($user_dashboard) {
         $dashboard_link = get_uri("dashboard/view/" . $user_dashboard);
     }
+    if($login_user->user_type != 'staff') {
+        $dashboard_link = get_uri("timeline");
+    }
     ?>
     <a class="sidebar-toggle-btn hide" href="#">
         <!--<i data-feather="menu" class="icon mt-1 text-off"></i>-->

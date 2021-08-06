@@ -14,7 +14,13 @@ class Signin extends App_Controller {
 
     function index() {
         if ($this->Users_model->login_user_id()) {
-            app_redirect('dashboard/view');
+            if($this->login_user->user_type == 'staff') {
+                app_redirect('dashboard/view');
+            }
+            else 
+            {
+                app_redirect('timeline');
+            }
         } else {
 
             $view_data["redirect"] = "";
@@ -101,7 +107,13 @@ class Signin extends App_Controller {
         if ($redirect) {
             return redirect()->to($redirect);
         } else {
-            app_redirect('dashboard/view');
+            if($this->login_user->user_type == 'staff') {
+                app_redirect('dashboard/view');
+            }
+            else 
+            {
+                app_redirect('timeline');
+            }
         }
     }
 
