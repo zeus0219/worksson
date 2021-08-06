@@ -27,10 +27,20 @@
                 echo "<div id='timeline'>";
             }
 
-            foreach ($posts as $post) {
+            foreach ($posts as $k=>$post) {
                 ?>
                 <div id="post-content-container-<?php echo $post->id; ?>" class="post-content">
-                    <div class="post clearfix">
+                    <div
+                        class="post clearfix <?php 
+                                                if(!isset($department_id) || !$department_id){
+                                                    echo "my-3 px-4";
+                                                    if($k%2 == 1) {
+                                                        echo " pt15";
+                                                    }
+                                                } 
+                                            ?>"
+                        style="<?php if(!isset($department_id) || !$department_id){echo "border: solid rgb(232, 235, 240);border-width: 1px 0px;";} ?>"
+                    >
                         <?php if (!$single_post) { ?>
                             <div class="post-date clearfix">
                                 <span><?php echo format_to_relative_time($post->created_at, true, true); ?></span>

@@ -1,4 +1,4 @@
-<div id="post-form-container">
+<div id="post-form-container" class="<?php if(!isset($department_id) || !$department_id){echo "px-4";} ?>">
     <?php echo form_open(get_uri("timeline/save"), array("id" => "post-form", "class" => "general-form", "role" => "form")); ?>
     <div class="box">
         <div class="box-content avatar avatar-md pr15 d-table-cell">

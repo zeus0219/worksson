@@ -12,7 +12,7 @@ class Home extends App_Controller {
 
     function index() {
         if ($this->Users_model->login_user_id()) {
-            if($this->login_user->user_type == 'staff') {
+            if($this->Users_model->get_one($this->Users_model->login_user_id())->user_type == 'staff') {
                 app_redirect('dashboard/view');
             }
             else 
